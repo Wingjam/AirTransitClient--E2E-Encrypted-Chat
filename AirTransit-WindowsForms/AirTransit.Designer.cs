@@ -33,9 +33,10 @@
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.TxtContactList = new System.Windows.Forms.RichTextBox();
-            this.Txt = new System.Windows.Forms.TextBox();
             this.Txtconversation = new System.Windows.Forms.RichTextBox();
+            this.TxtInput = new System.Windows.Forms.TextBox();
+            this.BtnSend = new System.Windows.Forms.Button();
+            this.ListContacts = new System.Windows.Forms.ListBox();
             this.groupBox1.SuspendLayout();
             this.MenuStrip.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -43,7 +44,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.TxtContactList);
+            this.groupBox1.Controls.Add(this.ListContacts);
             this.groupBox1.Location = new System.Drawing.Point(12, 27);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(212, 477);
@@ -72,36 +73,20 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.BtnSend);
             this.groupBox2.Controls.Add(this.Txtconversation);
-            this.groupBox2.Controls.Add(this.Txt);
+            this.groupBox2.Controls.Add(this.TxtInput);
             this.groupBox2.Location = new System.Drawing.Point(230, 27);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(619, 477);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Messages";
-            // 
-            // TxtContactList
-            // 
-            this.TxtContactList.Location = new System.Drawing.Point(7, 20);
-            this.TxtContactList.Name = "TxtContactList";
-            this.TxtContactList.ReadOnly = true;
-            this.TxtContactList.Size = new System.Drawing.Size(199, 451);
-            this.TxtContactList.TabIndex = 0;
-            this.TxtContactList.Text = "";
-            // 
-            // Txt
-            // 
-            this.Txt.Location = new System.Drawing.Point(6, 424);
-            this.Txt.Multiline = true;
-            this.Txt.Name = "Txt";
-            this.Txt.Size = new System.Drawing.Size(607, 47);
-            this.Txt.TabIndex = 0;
             // 
             // Txtconversation
             // 
@@ -110,6 +95,33 @@
             this.Txtconversation.Size = new System.Drawing.Size(607, 399);
             this.Txtconversation.TabIndex = 1;
             this.Txtconversation.Text = "";
+            // 
+            // TxtInput
+            // 
+            this.TxtInput.Location = new System.Drawing.Point(6, 424);
+            this.TxtInput.Multiline = true;
+            this.TxtInput.Name = "TxtInput";
+            this.TxtInput.Size = new System.Drawing.Size(552, 47);
+            this.TxtInput.TabIndex = 0;
+            // 
+            // BtnSend
+            // 
+            this.BtnSend.Location = new System.Drawing.Point(565, 425);
+            this.BtnSend.Name = "BtnSend";
+            this.BtnSend.Size = new System.Drawing.Size(48, 46);
+            this.BtnSend.TabIndex = 2;
+            this.BtnSend.Text = "Send";
+            this.BtnSend.UseVisualStyleBackColor = true;
+            this.BtnSend.Click += new System.EventHandler(this.BtnSend_Click);
+            // 
+            // ListContacts
+            // 
+            this.ListContacts.FormattingEnabled = true;
+            this.ListContacts.Location = new System.Drawing.Point(7, 20);
+            this.ListContacts.Name = "ListContacts";
+            this.ListContacts.Size = new System.Drawing.Size(199, 446);
+            this.ListContacts.Sorted = true;
+            this.ListContacts.TabIndex = 0;
             // 
             // AirTransit
             // 
@@ -140,9 +152,10 @@
         private System.Windows.Forms.ToolStripMenuItem menuToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.RichTextBox TxtContactList;
         private System.Windows.Forms.RichTextBox Txtconversation;
-        private System.Windows.Forms.TextBox Txt;
+        private System.Windows.Forms.TextBox TxtInput;
+        private System.Windows.Forms.Button BtnSend;
+        private System.Windows.Forms.ListBox ListContacts;
     }
 }
 
