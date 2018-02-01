@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AirTransit_Core
 {
-    class Contact
+    public class Contact
     {
         String PhoneNumber { get; set; }
         String Name { get; set; }

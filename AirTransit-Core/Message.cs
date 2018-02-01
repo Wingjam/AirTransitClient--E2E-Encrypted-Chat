@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AirTransit_Core
 {
-    class Message
+    public class Message
     {
         String ID { get; set; }
         String SenderPhoneNumber { get; set; }
