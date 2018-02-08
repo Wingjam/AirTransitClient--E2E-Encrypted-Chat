@@ -9,6 +9,6 @@ namespace AirTransit_Core.Repositories
         IEnumerable<Contact> GetContacts();
         Contact GetContact(String phoneNumber);
         void AddContact(Contact contact);
-        bool DeleteContact(Contact contact);
+        void DeleteContact(Contact contact);
     }
 }
