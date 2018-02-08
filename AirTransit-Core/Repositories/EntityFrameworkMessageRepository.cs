@@ -53,6 +53,13 @@ namespace AirTransit_Core.Repositories
         public void DeleteMessages(IEnumerable<Message> messages)
         {
             this.MessagingContext.RemoveRange(messages);
+            Commit();
+        }
+
+        public void AddMessage(Message message)
+        {
+            this.MessagingContext.Messages.Add(message);
+            Commit();
         }
     }
 }

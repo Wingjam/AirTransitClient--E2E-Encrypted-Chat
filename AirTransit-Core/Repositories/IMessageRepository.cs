@@ -15,5 +15,7 @@ namespace AirTransit_Core.Repositories
         Message GetLastMessage(Contact contact);
         
         void DeleteMessages(IEnumerable<Message> message);
+
+        void AddMessage(Message message);
     }
 }
