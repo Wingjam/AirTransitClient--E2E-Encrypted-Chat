@@ -1,8 +1,13 @@
 ﻿namespace AirTransit_Core.Repositories
 {
-    public class EntityFrameworkRepository
+    abstract class EntityFrameworkRepository
     {
         protected MessagingContext MessagingContext;
+
+        public EntityFrameworkRepository(MessagingContext messagingContext)
+        {
+            MessagingContext = messagingContext;
+        }
 
         protected void Commit()
         {

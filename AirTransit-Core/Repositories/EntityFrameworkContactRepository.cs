@@ -4,12 +4,10 @@ using AirTransit_Core.Models;
 
 namespace AirTransit_Core.Repositories
 {
-    public class EntityFrameworkContactRepository : EntityFrameworkRepository, IContactRepository
+    class EntityFrameworkContactRepository : EntityFrameworkRepository, IContactRepository
     {
-        public EntityFrameworkContactRepository(MessagingContext messagingContext)
-        {
-            this.MessagingContext = messagingContext;
-        }
+        public EntityFrameworkContactRepository(MessagingContext messagingContext) : base(messagingContext) { }
+
         public IEnumerable<Contact> GetContacts()
         {
             return MessagingContext.Contacts;

@@ -3,12 +3,12 @@ using AirTransit_Core.Repositories;
 
 namespace AirTransit_Core.Services
 {
-    public class MessageService : IMessageService
+    class MessageService : IMessageService
     {
         private readonly IMessageRepository _messageRepository;
         private readonly KeySet _keySet;
 
-        MessageService(IMessageRepository messageRepository, KeySet keySet)
+        public MessageService(IMessageRepository messageRepository, KeySet keySet)
         {
             this._messageRepository = messageRepository;
             this._keySet = keySet;

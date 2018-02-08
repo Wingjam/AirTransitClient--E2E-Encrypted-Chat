@@ -5,8 +5,10 @@ using AirTransit_Core.Models;
 
 namespace AirTransit_Core.Repositories
 {
-    public class EntityFrameworkMessageRepository : EntityFrameworkRepository, IMessageRepository
+    class EntityFrameworkMessageRepository : EntityFrameworkRepository, IMessageRepository
     {
+        public EntityFrameworkMessageRepository(MessagingContext messagingContext) : base(messagingContext) { }
+
         public IEnumerable<Message> GetMessages()
         {
             return this.MessagingContext.Messages;

@@ -14,7 +14,7 @@ namespace AirTransit_WindowsForms
     {
         string phoneNumber;
         private List<Contact> contacts;
-        private IAuthenticationService Auth;
+        //private IAuthenticationService Auth;
         private IContactRepository Contact;
         private IMessageRepository Message;
         private IMessageService MessageService;
@@ -46,7 +46,7 @@ namespace AirTransit_WindowsForms
                 //Contact = new //TODO
                 //Message = new //TODO
                 //MessageService = new //TODO
-                Auth.SignUp(phoneNumber);
+                //Auth.SignUp(phoneNumber);
                 Contacts = Contact.GetContacts().ToList();
                 if (ListContacts.SelectedItem == null && ListContacts.Items.Count > 0)
                 {

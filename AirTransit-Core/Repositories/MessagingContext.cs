@@ -3,14 +3,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AirTransit_Core.Repositories
 {
-    public class MessagingContext : DbContext
+    class MessagingContext : DbContext
     {
         public MessagingContext(DbContextOptions<MessagingContext> options) : base(options)
         {
+            
         }
         
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Message> Messages { get; set; }
-        public DbSet<Contact> KeySet { get; set; }
+        public DbSet<KeySet> KeySet { get; set; }
     }
 }

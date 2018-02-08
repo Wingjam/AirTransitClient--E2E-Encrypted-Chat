@@ -1,7 +1,7 @@
 ﻿namespace AirTransit_Core.Repositories
 {
-    public class EntityFrameworkKeySetRepository : EntityFrameworkRepository, IKeySetRepository
+    class EntityFrameworkKeySetRepository : EntityFrameworkRepository, IKeySetRepository
     {
-        
+        public EntityFrameworkKeySetRepository(MessagingContext messagingContext) : base(messagingContext) { }
     }
 }
