@@ -4,7 +4,7 @@ using AirTransit_Core.Repositories;
 
 namespace AirTransit_Core.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    class AuthenticationService : IAuthenticationService
     {
         private readonly IContactRepository _contactRepository;
 
