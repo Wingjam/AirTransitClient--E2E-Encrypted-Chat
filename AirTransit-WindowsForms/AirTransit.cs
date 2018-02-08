@@ -20,6 +20,7 @@ namespace AirTransit_WindowsForms
         private IMessageService MessageService;
         private Color UserColor = Color.DarkRed;
         private Color ContactColor = Color.DarkBlue;
+        private bool wasUser = false;
 
         public AirTransit()
         {
@@ -28,10 +29,10 @@ namespace AirTransit_WindowsForms
 
         private void AirTransit_Load(object sender, EventArgs e)
         {
-            using (FormLogin form2 = new FormLogin())
+            using (FormLogin login = new FormLogin())
             {
-                form2.ShowDialog();
-                PhoneNumber = form2.PhoneNumber;
+                login.ShowDialog();
+                PhoneNumber = login.PhoneNumber;
             }
             //Auth = new //TODO
             //Contact = new //TODO
@@ -47,8 +48,12 @@ namespace AirTransit_WindowsForms
 
         private void BtnSend_Click(object sender, EventArgs e)
         {
+            Contact currentContact = ListContacts.SelectedItem as Contact;
             if (ListContacts.SelectedItem != null)
-                MessageService.SendMessage(((Contact)ListContacts.SelectedItem).PhoneNumber, TxtInput.Text);
+            {
+                MessageService.SendMessage(currentContact, TxtInput.Text);
+                PrintMessage(Message.GetLastMessage(currentContact));
+            }
             else
                 MessageBox.Show("Plz select a contact before sending a message.");
         }
@@ -66,23 +71,22 @@ namespace AirTransit_WindowsForms
 
         private void ShowConvo(Contact contact)
         {
-            //TODO
-            //aller chercher les messages avec ce contact
-            //pour chaque message, indiquer le nom de la personne qui l'a enovoyer
-            //ensuite ecrire le message
-            List<Message> messages = Message.GetMessages(contact).ToList();
-            foreach (Message message in messages)
-            {
-
-                //Txtconversation.ForeColor = message.
-                //Txtconversation.AppendText(message.);
-            }
+            Txtconversation.Text = "";
+            Message.GetMessages(contact).ToList().ForEach(PrintMessage);
         }
 
-        //        private void PrintMessage(AirTransit_Core.Message message)
-        //        {
-        //
-        //        }
+        private void PrintMessage(Message message)
+        {
+            bool currentlyUser = message.Sender.PhoneNumber == PhoneNumber;
+            Txtconversation.ForeColor = currentlyUser ? UserColor : ContactColor;
+            if (wasUser != currentlyUser || Txtconversation.TextLength == 0)
+            {
+                Txtconversation.AppendText(message.Sender.Name);
+                wasUser = currentlyUser;
+            }
+
+            Txtconversation.AppendText(message.Content);
+        }
 
         public string PhoneNumber
         {
