@@ -6,10 +6,10 @@ namespace AirTransit_Core.Models
 {
     public class Message
     {
-        String Id { get; set; }
-        Contact Sender { get; set; }
-        String DestinationPhoneNumber { get; set; }
-        DateTime Timestamp { get; set; }
-        String Content { get; set; }
+        public string Id { get; set; }
+        public Contact Sender { get; set; }
+        public string DestinationPhoneNumber { get; set; }
+        public DateTime Timestamp { get; set; }
+        public string Content { get; set; }
     }
 }

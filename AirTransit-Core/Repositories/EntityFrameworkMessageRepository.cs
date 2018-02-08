@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AirTransit_Core.Models;
 
 namespace AirTransit_Core.Repositories
 {
     public class EntityFrameworkMessageRepository : EntityFrameworkRepository, IMessageRepository
     {
-        public Message SendMessage(string phoneNumber, string message)
-        {
-            throw new NotImplementedException();
-        }
-
         public IEnumerable<Message> GetMessages()
         {
-            throw new NotImplementedException();
+            return this.MessagingContext.Messages;
         }
 
         public IEnumerable<Message> GetMessages(DateTime since)
         {
-            throw new NotImplementedException();
+            return this.MessagingContext.Messages.Where(m => m.Timestamp > since);
         }
 
         public IEnumerable<Message> GetMessages(int maximumNumberOfMessages)
