@@ -1,23 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-//using AirTransit_Core;
-//using Message = Air;
+using AirTransit_Core.Repositories;
+using AirTransit_Core.Services;
+
+//using Message = AirTransit_Core.Message;
 
 namespace AirTransit_WindowsForms
 {
     public partial class AirTransit : Form
     {
-//        Core airCore;
+        string phoneNumber;
+        //Core airCore;
+        private IAuthenticationService Auth;
+        private IContactRepository Contact;
+        private IMessageRepository Message;
+
         public AirTransit()
         {
             InitializeComponent();
+        }
+
+        private void AirTransit_Load(object sender, EventArgs e)
+        {
+            using (FormLogin form2 = new FormLogin())
+            {
+                form2.ShowDialog();
+                PhoneNumber = form2.PhoneNumber;
+            }
         }
 
         private void BtnSend_Click(object sender, EventArgs e)
@@ -33,20 +42,30 @@ namespace AirTransit_WindowsForms
 
         private void ShowCurrentContactConvo()
         {
-//            ShowConvo((Contact)ListContacts.SelectedItem);
+            //            ShowConvo((Contact)ListContacts.SelectedItem);
         }
 
-//        private void ShowConvo(Contact contact)
-//        {
-            //TODO
-            //aller chercher les messages avec ce contact
-            //pour chaque message, indiquer le nom de la personne qui l'a enovoyer
-            //ensuite ecrire le message
-//        }
+        //        private void ShowConvo(Contact contact)
+        //        {
+        //TODO
+        //aller chercher les messages avec ce contact
+        //pour chaque message, indiquer le nom de la personne qui l'a enovoyer
+        //ensuite ecrire le message
+        //        }
 
-//        private void PrintMessage(AirTransit_Core.Message message)
-//        {
-//
-//        }
+        //        private void PrintMessage(AirTransit_Core.Message message)
+        //        {
+        //
+        //        }
+
+        public string PhoneNumber
+        {
+            get => phoneNumber;
+            set
+            {
+                phoneNumber = value;
+                TxtConnectedPhone.Text = phoneNumber;
+            }
+        }
     }
 }
