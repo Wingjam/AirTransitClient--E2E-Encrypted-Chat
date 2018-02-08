@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AirTransit_Core
+namespace AirTransit_Core.Models
 {
     public class Message
     {

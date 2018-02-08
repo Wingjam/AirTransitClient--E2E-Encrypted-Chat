@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AirTransit_Core
+namespace AirTransit_Core.Services
 {
     public interface IAuthenticationService
     {

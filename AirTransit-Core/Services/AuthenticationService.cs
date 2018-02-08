@@ -1,4 +1,4 @@
-﻿namespace AirTransit_Core
+﻿namespace AirTransit_Core.Services
 {
     public class AuthenticationService
     {

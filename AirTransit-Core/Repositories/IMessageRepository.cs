@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using AirTransit_Core.Models;
 
-namespace AirTransit_Core
+namespace AirTransit_Core.Repositories
 {
     public interface IMessageRepository
     {
