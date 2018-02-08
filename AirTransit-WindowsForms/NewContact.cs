@@ -32,6 +32,7 @@ namespace AirTransit_WindowsForms
                 {
                     PhoneNumber = TxtPhoneNumber.Text;
                     ContactName = TxtName.Text;
+                    DialogResult = DialogResult.OK;
                     Close();
                 }
             }

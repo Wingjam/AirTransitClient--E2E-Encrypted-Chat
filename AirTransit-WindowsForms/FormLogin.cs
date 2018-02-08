@@ -28,7 +28,10 @@ namespace AirTransit_WindowsForms
 
         private void FormLogin_FormClosing(object sender, FormClosingEventArgs e)
         {
-            PhoneNumber = !PhoneNumberValid() ? "" : TxtPhoneNumber.Text;
+            bool valid = PhoneNumberValid();
+            PhoneNumber = !valid ? "" : TxtPhoneNumber.Text;
+
+            DialogResult = valid ? DialogResult.OK : DialogResult.Abort;
         }
 
         private bool PhoneNumberValid()

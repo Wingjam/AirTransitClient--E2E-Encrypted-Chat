@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using AirTransit_Core;
 using AirTransit_Core.Models;
 using AirTransit_Core.Repositories;
 using AirTransit_Core.Services;
@@ -14,39 +15,40 @@ namespace AirTransit_WindowsForms
     {
         string phoneNumber;
         private List<Contact> contacts;
-        //private IAuthenticationService Auth;
+        private CoreServices Core;
         private IContactRepository Contact;
         private IMessageRepository Message;
         private IMessageService MessageService;
         private Color UserColor = Color.DarkRed;
         private Color ContactColor = Color.DarkBlue;
-        private bool wasUser = false;
+        private bool WasUser;
 
         public AirTransit()
         {
+            Core = new CoreServices();
             InitializeComponent();
         }
 
         private void AirTransit_Load(object sender, EventArgs e)
         {
+            DialogResult LoginCompleted;
             using (FormLogin login = new FormLogin())
             {
-                login.Show();
+                LoginCompleted = login.ShowDialog();
                 PhoneNumber = login.PhoneNumber;
             }
 
-            if (string.IsNullOrWhiteSpace(PhoneNumber))
+            if (LoginCompleted == DialogResult.Abort)
             {
-                MessageBox.Show("No phone number entered. Closing...");
+                MessageBox.Show("Login aborted. Closing...");
                 Close();
             }
             else
             {
-                //Auth = new //TODO
-                //Contact = new //TODO
-                //Message = new //TODO
-                //MessageService = new //TODO
-                //Auth.SignUp(phoneNumber);
+                Core.Init(phoneNumber);
+                Contact = Core.ContactRepository;
+                Message = Core.MessageRepository;
+                MessageService = Core.MessageService;
                 Contacts = Contact.GetContacts().ToList();
                 if (ListContacts.SelectedItem == null && ListContacts.Items.Count > 0)
                 {
@@ -88,10 +90,10 @@ namespace AirTransit_WindowsForms
         {
             bool currentlyUser = message.Sender.PhoneNumber == PhoneNumber;
             Txtconversation.ForeColor = currentlyUser ? UserColor : ContactColor;
-            if (wasUser != currentlyUser || Txtconversation.TextLength == 0)
+            if (WasUser != currentlyUser || Txtconversation.TextLength == 0)
             {
                 Txtconversation.AppendText(message.Sender.Name);
-                wasUser = currentlyUser;
+                WasUser = currentlyUser;
             }
 
             Txtconversation.AppendText(message.Content);
@@ -102,10 +104,9 @@ namespace AirTransit_WindowsForms
             NewContact newContact = new NewContact();
             if (newContact.ShowDialog() == DialogResult.OK)
             {
-
+                //TODO test si le ok fonctionne avec juste le clic du boutton dans le form.
+                Contact.AddContact(new Contact(newContact.PhoneNumber, newContact.ContactName));
             }
-            //Contact newContact = new Contact(){Name = };
-            //Contact.AddContact();
         }
 
         private string PhoneNumber
