@@ -5,11 +5,25 @@ namespace AirTransit_Core.Services
 {
     public class MessageService : IMessageService
     {
-        public void PersistMessageLocally(Contact contact)
+        private readonly IMessageRepository _messageRepository;
+        private readonly KeySet _keySet;
+
+        MessageService(IMessageRepository messageRepository, KeySet keySet)
         {
+            this._messageRepository = messageRepository;
+            this._keySet = keySet;
         }
         
-        public Message SendMessage(Contact destination, string message)
+        public void PersistMessageLocally(Contact destination, string content)
+        {
+            this._messageRepository.AddMessage(new Message
+            {
+                Content = content,
+                DestinationPhoneNumber = destination.PhoneNumber,
+            });
+        }
+        
+        public Message SendMessage(Contact destination, string content)
         {
             // Encrypt message
             // Send message to server
