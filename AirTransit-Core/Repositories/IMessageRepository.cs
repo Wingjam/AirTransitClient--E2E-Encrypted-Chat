@@ -6,7 +6,6 @@ namespace AirTransit_Core.Repositories
 {
     public interface IMessageRepository
     {
-        Message SendMessage(String phoneNumber, String message);
         
         IEnumerable<Message> GetMessages();
         IEnumerable<Message> GetMessages(DateTime since);
