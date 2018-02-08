@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLogin));
             this.label1 = new System.Windows.Forms.Label();
             this.TxtPhoneNumber = new System.Windows.Forms.TextBox();
             this.BtnLogin = new System.Windows.Forms.Button();
@@ -48,7 +49,6 @@
             this.TxtPhoneNumber.Name = "TxtPhoneNumber";
             this.TxtPhoneNumber.Size = new System.Drawing.Size(190, 20);
             this.TxtPhoneNumber.TabIndex = 2;
-            this.TxtPhoneNumber.Validating += new System.ComponentModel.CancelEventHandler(this.TxtPhoneNumber_Validating);
             // 
             // BtnLogin
             // 
@@ -69,6 +69,7 @@
             this.Controls.Add(this.BtnLogin);
             this.Controls.Add(this.TxtPhoneNumber);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormLogin";

@@ -31,18 +31,27 @@ namespace AirTransit_WindowsForms
         {
             using (FormLogin login = new FormLogin())
             {
-                login.ShowDialog();
+                login.Show();
                 PhoneNumber = login.PhoneNumber;
             }
-            //Auth = new //TODO
-            //Contact = new //TODO
-            //Message = new //TODO
-            //MessageService = new //TODO
-            Auth.SignUp(phoneNumber);
-            Contacts = Contact.GetContacts().ToList();
-            if (ListContacts.SelectedItem == null && ListContacts.Items.Count > 0)
+
+            if (string.IsNullOrWhiteSpace(PhoneNumber))
             {
-                ListContacts.SelectedIndex = 0;
+                MessageBox.Show("No phone number entered. Closing...");
+                Close();
+            }
+            else
+            {
+                //Auth = new //TODO
+                //Contact = new //TODO
+                //Message = new //TODO
+                //MessageService = new //TODO
+                Auth.SignUp(phoneNumber);
+                Contacts = Contact.GetContacts().ToList();
+                if (ListContacts.SelectedItem == null && ListContacts.Items.Count > 0)
+                {
+                    ListContacts.SelectedIndex = 0;
+                }
             }
         }
 
@@ -88,7 +97,18 @@ namespace AirTransit_WindowsForms
             Txtconversation.AppendText(message.Content);
         }
 
-        public string PhoneNumber
+        private void BtnContact_Click(object sender, EventArgs e)
+        {
+            NewContact newContact = new NewContact();
+            if (newContact.ShowDialog() == DialogResult.OK)
+            {
+
+            }
+            //Contact newContact = new Contact(){Name = };
+            //Contact.AddContact();
+        }
+
+        private string PhoneNumber
         {
             get => phoneNumber;
             set

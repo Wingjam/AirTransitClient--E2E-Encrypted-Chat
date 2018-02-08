@@ -7,40 +7,38 @@ namespace AirTransit_WindowsForms
 {
     public partial class FormLogin : Form
     {
+        public const string phoneRegex = @"\d{10}";
         public string PhoneNumber;
         public FormLogin()
         {
-            ControlBox = false;
             InitializeComponent();
         }
 
         private void BtnLogin_Click(object sender, EventArgs e)
         {
-            Close();
-        }
-
-        private void TxtPhoneNumber_Validating(object sender, CancelEventArgs e)
-        {
-            if (!PhoneNumberValid())
+            if (PhoneNumberValid())
             {
-                e.Cancel = true;
+                Close();
+            }
+            else
+            {
                 MessageBox.Show("The phone number must be 10 digits.");
             }
         }
 
         private void FormLogin_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!PhoneNumberValid())
-            {
-                e.Cancel = true;
-            }
-            PhoneNumber = TxtPhoneNumber.Text;
+            PhoneNumber = !PhoneNumberValid() ? "" : TxtPhoneNumber.Text;
         }
 
         private bool PhoneNumberValid()
         {
-            string phoneRegex = @"\d{10}";
-            Match match = Regex.Match(TxtPhoneNumber.Text, phoneRegex, RegexOptions.IgnoreCase);
+            return PhoneNumberValid(TxtPhoneNumber.Text);
+        }
+
+        public static bool PhoneNumberValid(string phoneNumber)
+        {
+            Match match = Regex.Match(phoneNumber, phoneRegex, RegexOptions.IgnoreCase);
             return match.Success;
         }
     }
