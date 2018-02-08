@@ -50,7 +50,7 @@ namespace AirTransit_Core.Repositories
             return contact.Messages.OrderBy(m => m.Timestamp).First();
         }
 
-        public bool DeleteMessages(IEnumerable<Message> messages)
+        public void DeleteMessages(IEnumerable<Message> messages)
         {
             this.MessagingContext.RemoveRange(messages);
         }
