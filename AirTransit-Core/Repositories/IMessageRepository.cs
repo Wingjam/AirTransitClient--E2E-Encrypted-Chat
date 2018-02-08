@@ -12,8 +12,8 @@ namespace AirTransit_Core.Repositories
         IEnumerable<Message> GetMessages(Contact contact);
         IEnumerable<Message> GetMessages(Contact contact, DateTime since);
         IEnumerable<Message> GetMessages(Contact contact, int maximumNumberOfMessages);
-        IEnumerable<Message> GetLastMessagesOfContacts(IEnumerable<Contact> contacts);
+        Message GetLastMessage(Contact contact);
         
-        bool DeleteMessages(List<String> messageIDs);
+        bool DeleteMessages(IEnumerable<Message> message);
     }
 }

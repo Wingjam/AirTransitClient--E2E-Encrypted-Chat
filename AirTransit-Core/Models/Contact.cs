@@ -10,6 +10,6 @@ namespace AirTransit_Core.Models
         public int Id { get; set; }
         public string PhoneNumber { get; set; }
         public string Name { get; set; }
-        public ICollection<Message> Messages { get; set; }
+        public ICollection<Message> Messages { get; }
     }
 }

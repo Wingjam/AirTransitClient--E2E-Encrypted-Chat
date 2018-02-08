@@ -14,37 +14,45 @@ namespace AirTransit_Core.Repositories
 
         public IEnumerable<Message> GetMessages(DateTime since)
         {
-            return this.MessagingContext.Messages.Where(m => m.Timestamp > since);
+            return this.MessagingContext.Messages
+                .Where(m => m.Timestamp > since);
         }
 
         public IEnumerable<Message> GetMessages(int maximumNumberOfMessages)
         {
-            throw new NotImplementedException();
+            return this.MessagingContext.Messages
+                .OrderBy(m => m.Timestamp)
+                .Take(maximumNumberOfMessages);
         }
 
         public IEnumerable<Message> GetMessages(Contact contact)
         {
-            throw new NotImplementedException();
+            return contact.Messages
+                .Where(m => m.DestinationPhoneNumber == contact.PhoneNumber);
         }
 
         public IEnumerable<Message> GetMessages(Contact contact, DateTime since)
         {
-            throw new NotImplementedException();
+            return contact.Messages
+                .Where(m => m.DestinationPhoneNumber == contact.PhoneNumber && m.Timestamp > since);
         }
 
         public IEnumerable<Message> GetMessages(Contact contact, int maximumNumberOfMessages)
         {
-            throw new NotImplementedException();
+            return contact.Messages
+                .Where(m => m.DestinationPhoneNumber == contact.PhoneNumber)
+                .OrderBy(m => m.Timestamp)
+                .Take(maximumNumberOfMessages);
         }
 
-        public IEnumerable<Message> GetLastMessagesOfContacts(IEnumerable<Contact> contacts)
+        public Message GetLastMessage(Contact contact)
         {
-            throw new NotImplementedException();
+            return contact.Messages.OrderBy(m => m.Timestamp).First();
         }
 
-        public bool DeleteMessages(List<string> messageIDs)
+        public bool DeleteMessages(IEnumerable<Message> messages)
         {
-            throw new NotImplementedException();
+            this.MessagingContext.RemoveRange(messages);
         }
     }
 }
