@@ -5,6 +5,6 @@ namespace AirTransit_Core.Services
 {
     public interface IMessageService
     {
-        Message SendMessage(String phoneNumber, String message);
+        Message SendMessage(Contact destination, String message);
     }
 }
