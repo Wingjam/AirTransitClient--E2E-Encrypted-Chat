@@ -10,16 +10,15 @@ namespace AirTransit_Core
 {
     public class CoreServices
     {
-        IContactRepository ContactRepository { get; set; }
-        IMessageRepository MessageRepository { get; set; }
+        public IContactRepository ContactRepository { get; set; }
+        public IMessageRepository MessageRepository { get; set; }
 
-        IMessageService MessageService { get; set; }
+        public IMessageService MessageService { get; set; }
 
         private IAuthenticationService AuthenticationService { get; set; }
 
         public CoreServices()
         {
-            
         }
 
         public bool Init(string phoneNumber)
