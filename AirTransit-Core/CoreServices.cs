@@ -11,6 +11,8 @@ namespace AirTransit_Core
 {
     public class CoreServices
     {
+        public static string SERVER_ADDRESS = "servermartineau.com";
+
         public IContactRepository ContactRepository { get; set; }
         public IMessageRepository MessageRepository { get; set; }
 
