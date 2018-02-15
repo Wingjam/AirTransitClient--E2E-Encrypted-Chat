@@ -4,6 +4,6 @@ namespace AirTransit_Core.Repositories
 {
     interface IKeySetRepository
     {
-        KeySet GetKeySet(string phoneNumber);
+        KeySet GetOrCreateKeySet(string phoneNumber);
     }
 }

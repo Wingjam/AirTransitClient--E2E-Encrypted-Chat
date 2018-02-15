@@ -1,4 +1,5 @@
-﻿using AirTransit_Core.Models;
+﻿using System.Text;
+using AirTransit_Core.Models;
 using AirTransit_Core.Repositories;
 
 namespace AirTransit_Core.Services
@@ -6,12 +7,20 @@ namespace AirTransit_Core.Services
     class MessageService : IMessageService
     {
         private readonly IMessageRepository _messageRepository;
+        private readonly IEncryptionService _encryptionService;
         private readonly KeySet _keySet;
+        private readonly Encoding _encoding;
 
-        public MessageService(IMessageRepository messageRepository, KeySet keySet)
+        public MessageService(
+            IMessageRepository messageRepository, 
+            IEncryptionService encryptionService, 
+            KeySet keySet,
+            Encoding encoding)
         {
             this._messageRepository = messageRepository;
+            this._encryptionService = encryptionService;
             this._keySet = keySet;
+            this._encoding = encoding;
         }
         
         public void PersistMessageLocally(Contact destination, string content)
@@ -25,7 +34,10 @@ namespace AirTransit_Core.Services
         
         public Message SendMessage(Contact destination, string content)
         {
-            // Encrypt message
+            var encryptedContent = this._encryptionService.Encrypt(
+                this._encoding.GetBytes(content), 
+                _keySet.PrivateKey);
+
             // Send message to server
             throw new System.NotImplementedException();
         }

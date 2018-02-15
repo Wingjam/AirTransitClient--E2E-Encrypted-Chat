@@ -2,7 +2,7 @@
 {
     abstract class EntityFrameworkRepository
     {
-        protected MessagingContext MessagingContext;
+        protected readonly MessagingContext MessagingContext;
 
         public EntityFrameworkRepository(MessagingContext messagingContext)
         {

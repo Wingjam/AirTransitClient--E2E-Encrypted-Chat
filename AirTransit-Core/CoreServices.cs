@@ -11,19 +11,24 @@ namespace AirTransit_Core
 {
     public class CoreServices
     {
+        public IContactRepository ContactRepository { get; private set; }
+        public IMessageRepository MessageRepository { get; private set; }
+        public IMessageService MessageService { get; private set; }
+        public Encoding Encoding { get; } = Encoding.UTF8;
+        
+        private readonly IEncryptionService _encryptionService;
+        private readonly BlockingCollection<string> _blockingCollection;
+        
+        private IAuthenticationService _authenticationService;
+        private IKeySetRepository _keySetRepository;
+        private MessagingContext _messagingContext;
+        
         public static string SERVER_ADDRESS = "servermartineau.com";
-
-        public IContactRepository ContactRepository { get; set; }
-        public IMessageRepository MessageRepository { get; set; }
-
-        public IMessageService MessageService { get; set; }
-
-        private IAuthenticationService AuthenticationService { get; set; }
-        private BlockingCollection<string> BlockingCollection { get; set; }
-
+        
         public CoreServices()
         {
-            BlockingCollection = new BlockingCollection<string>();
+            _blockingCollection = new BlockingCollection<string>();
+            this._encryptionService = new RSAEncryptionService();
         }
 
         public bool Init(string phoneNumber)
@@ -31,36 +36,35 @@ namespace AirTransit_Core
             var optionsBuilder = new DbContextOptionsBuilder<MessagingContext>();
             // TODO : Add connection to database
             optionsBuilder.UseSqlite("Data Source=airtransit.db");
-            MessagingContext messagingContext = new MessagingContext(optionsBuilder.Options);
-
-            // TODO : Does it really need ContactRepository?? Because it will be null here, it's going to be assigned later but it's not by reference (think not).
-            AuthenticationService = new AuthenticationService(ContactRepository);
-
-            KeySet keySet = AuthenticationService.SignUp(phoneNumber);
-
+            
+            KeySet keySet = _authenticationService.SignUp(phoneNumber);
             if (keySet != null)
             {
-                InitializeRepositories(messagingContext);
+                this._messagingContext = new MessagingContext(optionsBuilder.Options);
+                InitializeRepositories(phoneNumber, this._messagingContext);
                 InitializeServices(keySet);
+                return true;
             }
 
-            return keySet != null;
+            return false;
         }
 
         public BlockingCollection<string> GetBlockingCollection()
         {
-            return BlockingCollection;
+            return _blockingCollection;
         }
 
-        private void InitializeRepositories(MessagingContext messagingContext)
+        private void InitializeRepositories(string phoneNumber, MessagingContext messagingContext)
         {
-            ContactRepository = new EntityFrameworkContactRepository(messagingContext);
+            ContactRepository = new EntityFrameworkContactRepository(phoneNumber, messagingContext);
             MessageRepository = new EntityFrameworkMessageRepository(messagingContext);
+            this._keySetRepository = new EntityFrameworkKeySetRepository(this._messagingContext);
         }
 
         private void InitializeServices(KeySet keySet)
         {
-            MessageService = new MessageService(MessageRepository, keySet);
+            MessageService = new MessageService(MessageRepository, this._encryptionService, keySet, Encoding);
+            this._authenticationService = new AuthenticationService(this._keySetRepository);
         }
     }
 }

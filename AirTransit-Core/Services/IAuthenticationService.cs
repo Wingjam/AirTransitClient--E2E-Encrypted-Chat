@@ -5,6 +5,6 @@ namespace AirTransit_Core.Services
 {
     interface IAuthenticationService
     {
-        KeySet SignUp(String phoneNumber);
+        KeySet SignUp(string phoneNumber);
     }
 }
