@@ -152,6 +152,7 @@ namespace AirTransit_WindowsForms
 
         private void AppendTextSafely(string message)
         {
+            // Based on msdn information: https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/how-to-make-thread-safe-calls-to-windows-forms-controls
             if (Txtconversation.InvokeRequired)
             {
                 StringArgReturningVoidDelegate d = AppendTextSafely;
