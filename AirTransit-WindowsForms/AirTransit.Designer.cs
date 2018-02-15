@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AirTransit));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.BtnContact = new System.Windows.Forms.Button();
             this.ListContacts = new System.Windows.Forms.ListBox();
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,7 +41,6 @@
             this.TxtInput = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.TxtConnectedPhone = new System.Windows.Forms.Label();
-            this.BtnContact = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.MenuStrip.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -56,6 +56,16 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Contacts";
+            // 
+            // BtnContact
+            // 
+            this.BtnContact.Location = new System.Drawing.Point(7, 448);
+            this.BtnContact.Name = "BtnContact";
+            this.BtnContact.Size = new System.Drawing.Size(199, 23);
+            this.BtnContact.TabIndex = 1;
+            this.BtnContact.Text = "Add Contact";
+            this.BtnContact.UseVisualStyleBackColor = true;
+            this.BtnContact.Click += new System.EventHandler(this.BtnContact_Click);
             // 
             // ListContacts
             // 
@@ -146,16 +156,6 @@
             this.TxtConnectedPhone.TabIndex = 4;
             this.TxtConnectedPhone.Text = "0000000000";
             // 
-            // BtnContact
-            // 
-            this.BtnContact.Location = new System.Drawing.Point(7, 448);
-            this.BtnContact.Name = "BtnContact";
-            this.BtnContact.Size = new System.Drawing.Size(199, 23);
-            this.BtnContact.TabIndex = 1;
-            this.BtnContact.Text = "Add Contact";
-            this.BtnContact.UseVisualStyleBackColor = true;
-            this.BtnContact.Click += new System.EventHandler(this.BtnContact_Click);
-            // 
             // AirTransit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -171,6 +171,7 @@
             this.MainMenuStrip = this.MenuStrip;
             this.Name = "AirTransit";
             this.Text = "AirTransit";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AirTransit_FormClosing);
             this.Load += new System.EventHandler(this.AirTransit_Load);
             this.groupBox1.ResumeLayout(false);
             this.MenuStrip.ResumeLayout(false);

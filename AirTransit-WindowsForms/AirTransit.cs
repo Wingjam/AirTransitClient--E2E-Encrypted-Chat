@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -8,16 +9,19 @@ using AirTransit_Core.Models;
 using AirTransit_Core.Repositories;
 using AirTransit_Core.Services;
 using Message = AirTransit_Core.Models.Message;
+using System.Threading.Tasks;
 
 namespace AirTransit_WindowsForms
 {
     public partial class AirTransit : Form
     {
-        string phoneNumber;
+        private delegate void StringArgReturningVoidDelegate(string text);
+        private string phoneNumber;
         private List<Contact> contacts;
+        private BlockingCollection<string> newMessageIds;
         private CoreServices Core;
-        private IContactRepository Contact;
-        private IMessageRepository Message;
+        private IContactRepository ContactRepo;
+        private IMessageRepository MessageRepo;
         private IMessageService MessageService;
         private Color UserColor = Color.DarkRed;
         private Color ContactColor = Color.DarkBlue;
@@ -46,11 +50,37 @@ namespace AirTransit_WindowsForms
             {
                 if (Core.Init(phoneNumber))
                 {
-
-                    Contact = Core.ContactRepository;
-                    Message = Core.MessageRepository;
+                    ContactRepo = Core.ContactRepository;
+                    MessageRepo = Core.MessageRepository;
                     MessageService = Core.MessageService;
-                    Contacts = Contact.GetContacts().ToList();
+                    Contacts = ContactRepo.GetContacts().ToList();
+                    newMessageIds = Core.GetBlockingCollection();
+
+                    // Based on : https://docs.microsoft.com/en-us/dotnet/standard/collections/thread-safe/blockingcollection-overview
+                    Task.Run(() =>
+                    {
+                        while (!newMessageIds.IsCompleted)
+                        {
+
+                            string messageId = null;
+                            // Blocks if number.Count == 0
+                            // IOE means that Take() was called on a completed collection.
+                            // Some other thread can call CompleteAdding after we pass the
+                            // IsCompleted check but before we call Take. 
+                            // In this example, we can simply catch the exception since the 
+                            // loop will break on the next iteration.
+                            try
+                            {
+                                messageId = newMessageIds.Take();
+                            }
+                            catch (InvalidOperationException) { }
+
+                            if (messageId != null)
+                            {
+                                ProcessNewMessage(messageId);
+                            }
+                        }
+                    });
                     if (ListContacts.SelectedItem == null && ListContacts.Items.Count > 0)
                     {
                         ListContacts.SelectedIndex = 0;
@@ -70,7 +100,7 @@ namespace AirTransit_WindowsForms
             if (ListContacts.SelectedItem != null)
             {
                 MessageService.SendMessage(currentContact, TxtInput.Text);
-                PrintMessage(Message.GetLastMessage(currentContact));
+                PrintMessage(MessageRepo.GetLastMessage(currentContact));
             }
             else
                 MessageBox.Show("Plz select a contact before sending a message.");
@@ -79,6 +109,20 @@ namespace AirTransit_WindowsForms
         private void TxtContactList_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             ShowCurrentContactConvo();
+        }
+
+        private void BtnContact_Click(object sender, EventArgs e)
+        {
+            NewContact newContact = new NewContact();
+            if (newContact.ShowDialog() == DialogResult.OK)
+            {
+                ContactRepo.AddContact(new Contact(newContact.PhoneNumber, newContact.ContactName));
+            }
+        }
+
+        private void AirTransit_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            newMessageIds?.CompleteAdding();
         }
 
         private void ShowCurrentContactConvo()
@@ -90,7 +134,7 @@ namespace AirTransit_WindowsForms
         private void ShowConvo(Contact contact)
         {
             Txtconversation.Text = "";
-            Message.GetMessages(contact).ToList().ForEach(PrintMessage);
+            MessageRepo.GetMessages(contact).ToList().ForEach(PrintMessage);
         }
 
         private void PrintMessage(Message message)
@@ -99,19 +143,39 @@ namespace AirTransit_WindowsForms
             Txtconversation.ForeColor = currentlyUser ? UserColor : ContactColor;
             if (WasUser != currentlyUser || Txtconversation.TextLength == 0)
             {
-                Txtconversation.AppendText(message.Sender.Name);
+                AppendTextSafely(message.Sender.Name);
                 WasUser = currentlyUser;
             }
 
-            Txtconversation.AppendText(message.Content);
+            AppendTextSafely(message.Content);
         }
 
-        private void BtnContact_Click(object sender, EventArgs e)
+        private void AppendTextSafely(string message)
         {
-            NewContact newContact = new NewContact();
-            if (newContact.ShowDialog() == DialogResult.OK)
+            if (Txtconversation.InvokeRequired)
             {
-                Contact.AddContact(new Contact(newContact.PhoneNumber, newContact.ContactName));
+                StringArgReturningVoidDelegate d = AppendTextSafely;
+                Invoke(d, message);
+            }
+            else
+            {
+                Txtconversation.AppendText(message);
+            }
+        }
+
+        private void ProcessNewMessage(string messageId)
+        {
+            Message newMessage = MessageRepo.GetMessage(messageId);
+
+            Contact senderContact = newMessage.Sender;
+            if (senderContact == ListContacts.SelectedItem as Contact)
+            {
+                PrintMessage(newMessage);
+            }
+            else if (!Contacts.Contains(senderContact))
+            {
+                // Adds the new contact to the contacts list
+                Contacts.Add(senderContact);
             }
         }
 
@@ -127,8 +191,15 @@ namespace AirTransit_WindowsForms
 
         private List<Contact> Contacts
         {
+            get => contacts;
             set
             {
+                int clientContact = value.FindIndex(c => c.PhoneNumber == PhoneNumber);
+                // FindIndex return -1 if nothing is found
+                if (clientContact != -1)
+                {
+                    value.RemoveAt(clientContact);
+                }
                 contacts = value;
                 ListContacts.DataSource = contacts;
             }
