@@ -9,8 +9,7 @@ namespace AirTransit_Console
 {
     public class AirTransitConsole
     {
-        private LoggedInUser _loggedInUser;
-        private CoreServices _coreServices;
+        private readonly CoreServices _coreServices;
         private Contact _currentContact;
         private const bool TEXTINPUTFOLLOWING = true;
         private const string VERSION = "1.0";
@@ -24,17 +23,22 @@ namespace AirTransit_Console
         {
             var mustQuit = false;
             var loggedIn = false;
+            
             WriteDecoratedText($"AirTransit V{VERSION}");
+            
             while (!loggedIn)
             {
                 var phoneNumber = GetPhoneInput("Please enter your phone number (10 digits): ");
                 loggedIn = _coreServices.Init(phoneNumber);
             }
+            
             ShowMenuOptions();
+            
             while (!mustQuit)
             {
-                var command = GetTextInput("\nEnter your command: ");
-                switch (command?.ToUpper())
+                var command = GetTextInput("\nEnter your command: ").ToUpper();
+                
+                switch (command)
                 {
                     case "SM": //SendMessage
                         SendMessage();
@@ -68,18 +72,20 @@ namespace AirTransit_Console
                         break;
                 }
             }
+            
             Environment.Exit(0);
         }
 
         private static string GetTextInput(string text)
         {
             string result;
+            
             do
             {
                 WriteToConsole(text, TEXTINPUTFOLLOWING);
                 result = Console.ReadLine();
             } while (string.IsNullOrEmpty(result));
-
+            
             return result;
         }
         
@@ -87,24 +93,26 @@ namespace AirTransit_Console
         {
             var result = 0;
             string input;
+            
             do
             {
                 WriteToConsole(text, TEXTINPUTFOLLOWING);
                 input = Console.ReadLine();
             } while (!int.TryParse(input, out result));
-
+            
             return result;
         }
         
         private static string GetPhoneInput(string text)
         {
             string result;
+            
             do
             {
                 WriteToConsole(text, TEXTINPUTFOLLOWING);
                 result = Console.ReadLine();
             } while (string.IsNullOrEmpty(result) || result.Length != 10 || !result.All(char.IsDigit));
-
+            
             return result;
         }
 
@@ -114,12 +122,14 @@ namespace AirTransit_Console
             {
                 SelectContact();
             }
+            
             var answer = GetTextInput($"Send message to {_currentContact.Name} " +
-                                      $"({_currentContact.PhoneNumber})? (y/n): ");
-            if (answer.ToLower() == "n")
+                                      $"({_currentContact.PhoneNumber})? (y/n): ").ToLower();
+            if (answer == "n")
             {
                 SelectContact();
             }
+            
             var message = GetTextInput($"Message to {_currentContact.Name}: ");
             _coreServices.MessageService.SendMessage(_currentContact, message);
         }
@@ -130,9 +140,12 @@ namespace AirTransit_Console
             {
                 SelectContact();
             }
-            WriteDecoratedText($"{_currentContact.Name} ({_currentContact.PhoneNumber})");
+            
+            WriteContactHeader();
+            
             var fetchMoreMessages = true;
             var messagesToFetch = 10;
+            
             do
             {
                 var messages = messagesToFetch == -1 
@@ -142,16 +155,17 @@ namespace AirTransit_Console
                 {
                     WriteToConsole($"{message.Timestamp} - {message.Content}");
                 }
+                
                 var getLongerHistory = GetTextInput($"Get longer message history? (y/n/all): ").ToLower();
                 switch (getLongerHistory)
                 {
                     case "n":
                         messagesToFetch += 10;
-                        WriteDecoratedText($"{_currentContact.Name} ({_currentContact.PhoneNumber})");
+                        WriteContactHeader();
                         break;
                     case "all":
                         messagesToFetch = -1;
-                        WriteDecoratedText($"{_currentContact.Name} ({_currentContact.PhoneNumber})");
+                        WriteContactHeader();
                         break;
                     default:
                         fetchMoreMessages = false;
@@ -163,27 +177,33 @@ namespace AirTransit_Console
         private void AddContact()
         {
             WriteDecoratedText("Add a contact");
+            
             var name = GetTextInput("Contact name: ");
             var phoneNumber = GetPhoneInput("Phone number (10 digits): ");
             _coreServices.ContactRepository.AddContact(new Contact(phoneNumber, name));
+            
             WriteToConsole($"{name} added to your contacts.");
         }
 
         private void SelectContact()
         {
             WriteDecoratedText("Select a contact");
+            
             var contact = ContactSelection();
             if (contact == null) return;
             _currentContact = contact;
-            WriteDecoratedText($"{_currentContact.Name} ({_currentContact.PhoneNumber})");
+            
+            WriteToConsole($"{_currentContact.Name} selected.");
         }
 
         private void DeleteContact()
         {
             WriteDecoratedText("Delete a contact");
+            
             var contact = ContactSelection();
             if (contact == null) return;
             _coreServices.ContactRepository.DeleteContact(contact);
+            
             WriteToConsole($"{contact.Name} removed from your contacts.");
         }
 
@@ -199,12 +219,14 @@ namespace AirTransit_Console
                 {
                     WriteToConsole($"{i}. {contacts[i].Name} ({contacts[i].PhoneNumber})");
                 }
+                
                 var contactId = GetIntInput($"Choose a contact (0-{contacts.Count - 1}): ");
                 if (contactId < 0 || contactId > contacts.Count - 1)
                 {
                     WriteInvalidInput();
                     continue;
                 }; 
+                
                 result = contacts[contactId];
             } while (result == null);
 
@@ -214,6 +236,7 @@ namespace AirTransit_Console
         private void ShowContacts()
         {
             WriteDecoratedText("Your contacts");
+            
             var contacts = _coreServices.ContactRepository.GetContacts().ToList();
             foreach (var contact in contacts)
             {
@@ -224,10 +247,12 @@ namespace AirTransit_Console
         private static string DecorateText(string text)
         {
             const string DECORATION = "------------------------------";
+            
             var sbuild = new StringBuilder();
             sbuild.AppendLine(DECORATION);
             sbuild.AppendLine(text.PadLeft(text.Length+(30-text.Length)/2));
             sbuild.AppendLine(DECORATION);
+            
             return sbuild.ToString();
         }
 
@@ -241,6 +266,14 @@ namespace AirTransit_Console
             else
             {
                 Console.Write(text);
+            }
+        }
+
+        private void WriteContactHeader()
+        {
+            if (_currentContact != null)
+            {
+                WriteDecoratedText($"{_currentContact.Name} ({_currentContact.PhoneNumber})");
             }
         }
 
@@ -268,18 +301,13 @@ namespace AirTransit_Console
                 "MO - Show menu options",
                 "QQ - Quit"
             };
+            
             foreach (var option in options)
             {
                 sbuild.AppendLine(option);
             }
+            
             WriteToConsole(sbuild.ToString(), true);
-        }
-
-        private class LoggedInUser
-        {
-            public string PhoneNumber { get; set; }
-            public List<Message> Messages { get; set; }
-            public List<Contact> Contacts { get; set; }
         }
     }
 }
