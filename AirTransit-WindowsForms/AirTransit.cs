@@ -104,7 +104,6 @@ namespace AirTransit_WindowsForms
             NewContact newContact = new NewContact();
             if (newContact.ShowDialog() == DialogResult.OK)
             {
-                //TODO test si le ok fonctionne avec juste le clic du boutton dans le form.
                 Contact.AddContact(new Contact(newContact.PhoneNumber, newContact.ContactName));
             }
         }
