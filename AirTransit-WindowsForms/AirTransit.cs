@@ -44,14 +44,22 @@ namespace AirTransit_WindowsForms
             }
             else
             {
-                Core.Init(phoneNumber);
-                Contact = Core.ContactRepository;
-                Message = Core.MessageRepository;
-                MessageService = Core.MessageService;
-                Contacts = Contact.GetContacts().ToList();
-                if (ListContacts.SelectedItem == null && ListContacts.Items.Count > 0)
+                if (Core.Init(phoneNumber))
                 {
-                    ListContacts.SelectedIndex = 0;
+
+                    Contact = Core.ContactRepository;
+                    Message = Core.MessageRepository;
+                    MessageService = Core.MessageService;
+                    Contacts = Contact.GetContacts().ToList();
+                    if (ListContacts.SelectedItem == null && ListContacts.Items.Count > 0)
+                    {
+                        ListContacts.SelectedIndex = 0;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("An error as occur during initialization. Closing.");
+                    Close();
                 }
             }
         }
