@@ -9,6 +9,11 @@ namespace AirTransit_Core.Repositories
     {
         public EntityFrameworkMessageRepository(MessagingContext messagingContext) : base(messagingContext) { }
 
+        public Message GetMessage(string id)
+        {
+            return null;
+        }
+
         public IEnumerable<Message> GetMessages()
         {
             return this.MessagingContext.Messages;

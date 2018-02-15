@@ -6,6 +6,7 @@ namespace AirTransit_Core.Repositories
 {
     public interface IMessageRepository
     {
+        Message GetMessage(string id);
         IEnumerable<Message> GetMessages();
         IEnumerable<Message> GetMessages(DateTime since);
         IEnumerable<Message> GetMessages(int maximumNumberOfMessages);
