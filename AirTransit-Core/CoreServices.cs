@@ -24,8 +24,12 @@ namespace AirTransit_Core
         public bool Init(string phoneNumber)
         {
             var optionsBuilder = new DbContextOptionsBuilder<MessagingContext>();
-            optionsBuilder.UseSqlite("Data Source=blog.db");
+            // TODO : Add connection to database
+            //optionsBuilder.UseSqlite("Data Source=blog.db");
             MessagingContext messagingContext = new MessagingContext(optionsBuilder.Options);
+
+            // TODO : Does it really need ContactRepository?? Because it will be null here, it's going to be assigned later but it's not by reference (think not).
+            AuthenticationService = new AuthenticationService(ContactRepository);
 
             KeySet keySet = AuthenticationService.SignUp(phoneNumber);
 

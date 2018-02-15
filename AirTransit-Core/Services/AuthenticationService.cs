@@ -15,7 +15,7 @@ namespace AirTransit_Core.Services
 
         public KeySet SignUp(string phoneNumber)
         {
-            this._contactRepository.GetContact(phoneNumber);
+            //this._contactRepository.GetContact(phoneNumber);
             // Check if a set of private and public key for the phone number exists
             // If it exists, we don't have to create new keys
             // If it doesn't, we have to create a new set of keys and then send the public key to the server

@@ -37,7 +37,6 @@ namespace AirTransit_WindowsForms
                 LoginCompleted = login.ShowDialog();
                 PhoneNumber = login.PhoneNumber;
             }
-
             if (LoginCompleted == DialogResult.Abort)
             {
                 MessageBox.Show("Login aborted. Closing...");
