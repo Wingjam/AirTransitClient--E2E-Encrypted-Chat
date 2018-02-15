@@ -3,6 +3,7 @@ using AirTransit_Core.Repositories;
 using AirTransit_Core.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,16 +17,18 @@ namespace AirTransit_Core
         public IMessageService MessageService { get; set; }
 
         private IAuthenticationService AuthenticationService { get; set; }
+        private BlockingCollection<string> BlockingCollection { get; set; }
 
         public CoreServices()
         {
+            BlockingCollection = new BlockingCollection<string>();
         }
 
         public bool Init(string phoneNumber)
         {
             var optionsBuilder = new DbContextOptionsBuilder<MessagingContext>();
             // TODO : Add connection to database
-            //optionsBuilder.UseSqlite("Data Source=blog.db");
+            optionsBuilder.UseSqlite("Data Source=airtransit.db");
             MessagingContext messagingContext = new MessagingContext(optionsBuilder.Options);
 
             // TODO : Does it really need ContactRepository?? Because it will be null here, it's going to be assigned later but it's not by reference (think not).
@@ -40,6 +43,11 @@ namespace AirTransit_Core
             }
 
             return keySet != null;
+        }
+
+        public BlockingCollection<string> GetBlockingCollection()
+        {
+            return BlockingCollection;
         }
 
         private void InitializeRepositories(MessagingContext messagingContext)
