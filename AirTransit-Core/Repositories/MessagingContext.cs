@@ -7,7 +7,7 @@ namespace AirTransit_Core.Repositories
     {
         public MessagingContext(DbContextOptions<MessagingContext> options) : base(options)
         {
-            
+            Database.Migrate();
         }
         
         public DbSet<Contact> Contacts { get; set; }

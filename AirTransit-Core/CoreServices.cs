@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace AirTransit_Core
@@ -33,14 +34,11 @@ namespace AirTransit_Core
 
         public bool Init(string phoneNumber)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<MessagingContext>();
-            // TODO : Add connection to database
-            optionsBuilder.UseSqlite("Data Source=airtransit.db");
-            
             KeySet keySet = _authenticationService.SignUp(phoneNumber);
             if (keySet != null)
             {
-                this._messagingContext = new MessagingContext(optionsBuilder.Options);
+                this._messagingContext = new DesignTimeDbContextFactory().CreateDbContext(new string[] { });
+
                 InitializeRepositories(phoneNumber, this._messagingContext);
                 InitializeServices(keySet);
                 return true;
