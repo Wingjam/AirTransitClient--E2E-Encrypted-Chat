@@ -30,14 +30,19 @@ namespace AirTransit_Core.Services
             this._phoneNumber = phoneNumber;
         }
 
+        public string FetchPublicKeyOfContact(String phoneNumber)
+        {
+            // Get the public key of the contact through a server call
+            Task<Registry> taskRegistry = ServerCommunication.GetRegistryAsync(phoneNumber);
+            taskRegistry.Wait();
+            return taskRegistry.Result.PublicKey;
+        }
+
         public bool SendMessage(Contact destination, string content)
         {
             if (destination.PublicKey == null)
             {
-                // Get the public key of the contact through a server call
-                Task<Registry> taskRegistry = ServerCommunication.GetRegistryAsync(destination.PhoneNumber);
-                taskRegistry.Wait();
-                destination.PublicKey = taskRegistry.Result.PublicKey;
+                destination.PublicKey = FetchPublicKeyOfContact(destination.PhoneNumber);
                 _contactRepository.UpdateContact(destination);
             }
 
@@ -85,8 +90,13 @@ namespace AirTransit_Core.Services
             Contact senderContact = _contactRepository.GetContact(decryptedMessage.SenderPhoneNumber);
             if (senderContact == null)
             {
-                // TODO aller fetch la public key du contact et creer le contact avec cette clef
-                senderContact = new Contact(decryptedMessage.SenderPhoneNumber, decryptedMessage.SenderPhoneNumber);
+                // fetch la public key du contact et crée le contact avec cette clef
+                senderContact = new Contact()
+                {
+                    Name = decryptedMessage.SenderPhoneNumber,
+                    PhoneNumber = decryptedMessage.SenderPhoneNumber,
+                    PublicKey = FetchPublicKeyOfContact(decryptedMessage.SenderPhoneNumber)
+                };
                 _contactRepository.AddContact(senderContact);
             }
 
