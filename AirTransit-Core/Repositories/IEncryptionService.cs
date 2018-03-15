@@ -1,8 +1,10 @@
-﻿namespace AirTransit_Core.Repositories
+﻿using AirTransit_Core.Models;
+
+namespace AirTransit_Core.Repositories
 {
     public interface IEncryptionService
     {
-        byte[] Encrypt(byte[] payload, string privateKey);
-        byte[] Decrypt(byte[] payload, string destinationPublicKey);
+        string Encrypt(string message, Contact contact);
+        string Decrypt(string encryptedMessage);
     }
 }

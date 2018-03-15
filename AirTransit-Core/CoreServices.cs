@@ -18,20 +18,18 @@ namespace AirTransit_Core
         public IMessageService MessageService { get; private set; }
         public Encoding Encoding { get; } = Encoding.UTF8;
         
-        private readonly IEncryptionService _encryptionService;
-        private readonly BlockingCollection<Message> _blockingCollection;
+        private readonly BlockingCollection<string> _blockingCollection;
         
         private IAuthenticationService _authenticationService;
         private IKeySetRepository _keySetRepository;
         private MessagingContext _messagingContext;
-        private MessageFetcher _messageFetcher;
-        
+        private IEncryptionService _encryptionService;
+
         public static string SERVER_ADDRESS = "jo2server.ddns.net:5000";
         
         public CoreServices()
         {
-            _blockingCollection = new BlockingCollection<Message>();
-            this._encryptionService = new RSAEncryptionService();
+            _blockingCollection = new BlockingCollection<string>();
         }
 
         public bool Init(string phoneNumber)
@@ -108,7 +106,8 @@ namespace AirTransit_Core
         {
             ContactRepository = new EntityFrameworkContactRepository(phoneNumber, messagingContext);
             MessageRepository = new EntityFrameworkMessageRepository(messagingContext);
-            this._keySetRepository = new EntityFrameworkKeySetRepository(this._messagingContext);
+            this._keySetRepository = new EntityFrameworkKeySetRepository(phoneNumber, this._messagingContext);
+            this._encryptionService = new RSAEncryptionService(this._keySetRepository);
         }
 
         private void InitializeServices(KeySet keySet)

@@ -9,7 +9,25 @@ namespace AirTransit_Core.Repositories
 {
     internal class EntityFrameworkKeySetRepository : EntityFrameworkRepository, IKeySetRepository
     {
-        public EntityFrameworkKeySetRepository(MessagingContext messagingContext) : base(messagingContext) { }
+        private readonly string _clientPhoneNumber;
+
+        public EntityFrameworkKeySetRepository(string clientPhoneNumber, MessagingContext messagingContext) : base(messagingContext)
+        {
+            this._clientPhoneNumber = clientPhoneNumber;
+        }
+        
+        public KeySet GetOrCreateKeySet()
+        {
+            var keySet = this.MessagingContext.KeySet.SingleOrDefault(ks => ks.PhoneNumber == this._clientPhoneNumber);
+            if (keySet == null)
+            {
+                keySet = CreateRSAKeyPair(this._clientPhoneNumber);
+                MessagingContext.KeySet.Add(keySet);
+            }
+
+            return keySet;
+        }
+        
         public KeySet GetOrCreateKeySet(string phoneNumber)
         {
             var keySet = this.MessagingContext.KeySet.SingleOrDefault(ks => ks.PhoneNumber == phoneNumber);
@@ -24,11 +42,8 @@ namespace AirTransit_Core.Repositories
         {
             using (var rsa = RSA.Create())
             {
-                var rsaParameters = rsa.ExportParameters(false);
-                var publicKey = JsonConvert.SerializeObject(rsaParameters);
-                
-                rsaParameters = rsa.ExportParameters(true);
-                var privateKey = JsonConvert.SerializeObject(rsaParameters);
+                var publicKey = rsa.ToXmlString(false);
+                var privateKey = rsa.ToXmlString(true);
                 return new KeySet(phoneNumber, publicKey, privateKey);
             }
         }

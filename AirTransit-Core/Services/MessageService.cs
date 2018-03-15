@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography;
+using System.Text;
 using AirTransit_Core.Models;
 using AirTransit_Core.Repositories;
 
@@ -34,9 +35,7 @@ namespace AirTransit_Core.Services
         
         public Message SendMessage(Contact destination, string content)
         {
-            var encryptedContent = this._encryptionService.Encrypt(
-                this._encoding.GetBytes(content), 
-                _keySet.PrivateKey);
+            var encryptedContent = this._encryptionService.Encrypt(content, destination);
 
             // Send message to server
             throw new System.NotImplementedException();
