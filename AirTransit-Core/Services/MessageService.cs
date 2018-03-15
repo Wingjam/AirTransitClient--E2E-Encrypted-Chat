@@ -73,23 +73,22 @@ namespace AirTransit_Core.Services
         public Message ReceiveNewMessages(EncryptedMessage encryptedMessage)
         {
             // 1. decrypt message
-            // TODO : utiliser le vrai decrypt. et avoir une fonction qui prend le raw message decrypt et qui le tranforme en un vrai objet message.
             MessageDTO decryptedMessage = StringToMessageDTO(_encryptionService.Decrypt(encryptedMessage.Content));
-            // 1.5 Validate that message with its signature
-            // TODO decrypt la signature avec la clef publique du sender.
-            //if (decryptedMessage.Signature != encryptedMessage.DestinationPhoneNumber)
-            //if (_encryptionService.)
-            {
-                // If the signature is invalid, we skip this message.
-                return null;
-            }
 
             // 2. Add the contact if he do not exist
             Contact senderContact = _contactRepository.GetContact(decryptedMessage.SenderPhoneNumber);
             if (senderContact == null)
             {
+                // TODO aller fetch la public key du contact et creer le contact avec cette clef
                 senderContact = new Contact(decryptedMessage.SenderPhoneNumber, decryptedMessage.SenderPhoneNumber);
                 _contactRepository.AddContact(senderContact);
+            }
+
+            // 2.5 Validate that message with its signature
+            if (!_encryptionService.VerifySignature(encryptedMessage.DestinationPhoneNumber, decryptedMessage.Signature, senderContact))
+            {
+                // If the signature is invalid, we skip this message.
+                return null;
             }
             // 3. Add the message in the BD
             Message message = new Message()
