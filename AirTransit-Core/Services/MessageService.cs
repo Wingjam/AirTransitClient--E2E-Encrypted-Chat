@@ -33,9 +33,8 @@ namespace AirTransit_Core.Services
         public string FetchPublicKeyOfContact(String phoneNumber)
         {
             // Get the public key of the contact through a server call
-            Task<Registry> taskRegistry = ServerCommunication.GetRegistryAsync(phoneNumber);
-            taskRegistry.Wait();
-            return taskRegistry.Result.PublicKey;
+            Registry taskRegistry = ServerCommunication.GetRegistry(phoneNumber);
+            return taskRegistry.PublicKey;
         }
 
         public bool SendMessage(Contact destination, string content)
@@ -63,9 +62,7 @@ namespace AirTransit_Core.Services
                 DestinationPhoneNumber = destination.PhoneNumber,
             };
 
-            Task<string> task = ServerCommunication.CreateMessageAsync(encryptedMessage);
-            task.Wait();
-            string guid = task.Result;
+            var guid = ServerCommunication.CreateMessage(encryptedMessage);
             
             Message message = new Message()
             {

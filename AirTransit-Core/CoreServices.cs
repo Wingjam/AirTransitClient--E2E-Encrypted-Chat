@@ -24,8 +24,6 @@ namespace AirTransit_Core
         private MessagingContext _messagingContext;
         private MessageFetcher _messageFetcher;
         private IEncryptionService _encryptionService;
-
-        public static string SERVER_ADDRESS = "jo2server.ddns.net:5000";
         
         public CoreServices()
         {

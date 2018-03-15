@@ -1,88 +1,92 @@
-﻿using System;
+﻿using AirTransit_Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using AirTransit_Core.Models;
 
 namespace AirTransit_Core
 {
     public static class ServerCommunication
     {
-        static HttpClient client = new HttpClient();
+        public static string ServerAddress = "http://jo2server.ddns.net:5000/";
+        private static readonly HttpClient Client = new HttpClient
+        {
+            BaseAddress = new Uri(ServerAddress),
+            DefaultRequestHeaders = {Accept = {new MediaTypeWithQualityHeaderValue("application/json")}}
+        };
 
         // ===================
         // ===== Message =====
         // ===================
-        public static async Task<string> CreateMessageAsync(EncryptedMessage message)
+        public static string CreateMessage(EncryptedMessage message)
         {
-            HttpResponseMessage response = await client.PostAsJsonAsync(
-                "api/message", message);
+            HttpResponseMessage response = Client.PostAsJsonAsync("api/message", message).Result;
+
             response.EnsureSuccessStatusCode();
 
             // Deserialize the added message from the response body.
-            message = await response.Content.ReadAsAsync<EncryptedMessage>();
+            message = response.Content.ReadAsAsync<EncryptedMessage>().Result;
             return message.Guid;
         }
 
-        public static async Task<List<EncryptedMessage>> GetMessagesAsync(string phoneNumber, string auth)
+        public static List<EncryptedMessage> GetMessages(string phoneNumber, string auth)
         {
             List<EncryptedMessage> messages = null;
-            HttpResponseMessage response = await client.GetAsync($"api/message/{phoneNumber}?authSignature={auth}");
+            HttpResponseMessage response = Client.GetAsync($"api/message/{phoneNumber}?authSignature={auth}").Result;
             if (response.IsSuccessStatusCode)
             {
-                messages = await response.Content.ReadAsAsync<List<EncryptedMessage>>();
+                messages = response.Content.ReadAsAsync<List<EncryptedMessage>>().Result;
             }
             return messages;
         }
 
-        static async Task<bool> DeleteMessageAsync(string id, string auth)
+        public static bool DeleteMessage(string id, string auth)
         {
-            HttpResponseMessage response = await client.DeleteAsync(
-                $"api/message/{id}?authSignature={auth}");
+            HttpResponseMessage response = Client.DeleteAsync(
+                $"api/message/{id}?authSignature={auth}").Result;
             return response.StatusCode == HttpStatusCode.NoContent;
         }
 
         // ====================
         // ===== Registry =====
         // ====================
-        public static async Task<bool> CreateRegistryAsync(Registry registry)
+        public static bool CreateRegistry(Registry registry)
         {
-            HttpResponseMessage response = await client.PostAsJsonAsync(
-                "api/registry", registry);
+            HttpResponseMessage response = Client.PostAsJsonAsync(
+                "api/registry", registry).Result;
             response.EnsureSuccessStatusCode();
 
             return response.IsSuccessStatusCode;
         }
 
-        public static async Task<Registry> GetRegistryAsync(string phoneNumber)
+        public static Registry GetRegistry(string phoneNumber)
         {
             Registry registry = null;
-            HttpResponseMessage response = await client.GetAsync($"api/registry/{phoneNumber}");
+            HttpResponseMessage response = Client.GetAsync($"api/registry/{phoneNumber}").Result;
             if (response.IsSuccessStatusCode)
             {
-                registry = await response.Content.ReadAsAsync<Registry>();
+                registry = response.Content.ReadAsAsync<Registry>().Result;
             }
             return registry;
         }
 
-        static async Task<Registry> UpdateRegistryAsync(Registry registry)
+        public static Registry UpdateRegistry(Registry registry)
         {
-            HttpResponseMessage response = await client.PutAsJsonAsync(
-                $"api/registry/{registry.PhoneNumber}", registry);
+            HttpResponseMessage response = Client.PutAsJsonAsync(
+                $"api/registry/{registry.PhoneNumber}", registry).Result;
             response.EnsureSuccessStatusCode();
 
             // Deserialize the updated registry from the response body.
-            registry = await response.Content.ReadAsAsync<Registry>();
+            registry = response.Content.ReadAsAsync<Registry>().Result;
             return registry;
         }
 
-        static async Task<bool> DeleteRegistryAsync(string phoneNumber)
+        public static bool DeleteRegistry(string phoneNumber)
         {
-            HttpResponseMessage response = await client.DeleteAsync(
-                $"api/registry/{phoneNumber}");
+            HttpResponseMessage response = Client.DeleteAsync(
+                $"api/registry/{phoneNumber}").Result;
             return response.StatusCode == HttpStatusCode.NoContent;
         }
     }

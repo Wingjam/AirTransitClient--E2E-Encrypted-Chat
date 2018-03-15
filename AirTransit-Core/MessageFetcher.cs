@@ -47,15 +47,7 @@ namespace AirTransit_Core
 
         private IEnumerable<EncryptedMessage> Fetch()
         {
-            // TODO This method need to be completely tested.
-            // Fetch from server
-            string jsonInformation =
-                GET($"{ CoreServices.SERVER_ADDRESS }/Messages?{ PhoneNumber }&{ AuthSignature }");
-
-            // Fill a list of messages
-            List<EncryptedMessage> deserializedProduct = JsonConvert.DeserializeObject<List<EncryptedMessage>>(jsonInformation);
-            
-            return deserializedProduct;
+            return null;
         }
 
         // Based on : https://stackoverflow.com/questions/8270464/best-way-to-call-a-json-webservice-from-a-net-console
