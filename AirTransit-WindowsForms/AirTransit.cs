@@ -207,7 +207,14 @@ namespace AirTransit_WindowsForms
 
         private void ListContacts_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            // TODO rename the contact
+            Contact currentContact = ListContacts.SelectedItem as Contact;
+            NewContact newContact = new NewContact(currentContact.PhoneNumber, currentContact.Name);
+            if (newContact.ShowDialog() == DialogResult.OK)
+            {
+                currentContact.Name = newContact.ContactName;
+                // TODO push dans le contact reppo le rename
+               // ContactRepo.RenameContact
+            }
         }
     }
 }
