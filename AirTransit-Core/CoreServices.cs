@@ -25,7 +25,7 @@ namespace AirTransit_Core
         private MessagingContext _messagingContext;
         private MessageFetcher _messageFetcher;
         
-        public static string SERVER_ADDRESS = "servermartineau.com";
+        public static string SERVER_ADDRESS = "jo2server.ddns.net:5000";
         
         public CoreServices()
         {

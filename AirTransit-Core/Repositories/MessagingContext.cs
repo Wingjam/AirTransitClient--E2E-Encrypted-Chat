@@ -7,6 +7,7 @@ namespace AirTransit_Core.Repositories
     {
         public MessagingContext(DbContextOptions<MessagingContext> options) : base(options)
         {
+            SQLitePCL.Batteries.Init();
             Database.Migrate();
         }
         
