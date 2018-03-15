@@ -19,11 +19,9 @@ namespace AirTransit_Core.Repositories
         public KeySet GetOrCreateKeySet()
         {
             var keySet = this.MessagingContext.KeySet.SingleOrDefault(ks => ks.PhoneNumber == this._clientPhoneNumber);
-            if (keySet == null)
-            {
-                keySet = CreateRSAKeyPair(this._clientPhoneNumber);
-                MessagingContext.KeySet.Add(keySet);
-            }
+            if (keySet != null) return keySet;
+            keySet = CreateRSAKeyPair(this._clientPhoneNumber);
+            MessagingContext.KeySet.Add(keySet);
 
             return keySet;
         }
