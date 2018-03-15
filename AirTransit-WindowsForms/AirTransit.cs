@@ -212,8 +212,7 @@ namespace AirTransit_WindowsForms
             if (newContact.ShowDialog() == DialogResult.OK)
             {
                 currentContact.Name = newContact.ContactName;
-                // TODO push dans le contact reppo le rename
-               // ContactRepo.RenameContact
+                ContactRepo.UpdateContact(currentContact);
             }
         }
     }
