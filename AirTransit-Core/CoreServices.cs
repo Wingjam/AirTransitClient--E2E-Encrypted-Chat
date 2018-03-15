@@ -41,7 +41,8 @@ namespace AirTransit_Core
 
             var keySet = _authenticationService.SignUp(phoneNumber);
             if (keySet == null) return false;
-            InitializeServices(keySet);
+
+            MessageService = new MessageService(MessageRepository, this._encryptionService, Encoding);
             _messageFetcher = new MessageFetcher(ReceiveNewMessages, TimeSpan.FromMilliseconds(1000), phoneNumber, "TODO la authSignature de hugo");
             return true;
 
@@ -109,11 +110,6 @@ namespace AirTransit_Core
             MessageRepository = new EntityFrameworkMessageRepository(messagingContext);
             this._keySetRepository = new EntityFrameworkKeySetRepository(phoneNumber, this._messagingContext);
             this._encryptionService = new RSAEncryptionService(this._keySetRepository);
-        }
-
-        private void InitializeServices(KeySet keySet)
-        {
-            MessageService = new MessageService(MessageRepository, this._encryptionService, keySet, Encoding);
         }
     }
 }

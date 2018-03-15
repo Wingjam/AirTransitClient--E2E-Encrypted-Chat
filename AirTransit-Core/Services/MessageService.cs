@@ -1,7 +1,9 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+﻿using System;
 using AirTransit_Core.Models;
 using AirTransit_Core.Repositories;
+using Newtonsoft.Json;
 
 namespace AirTransit_Core.Services
 {
@@ -9,19 +11,19 @@ namespace AirTransit_Core.Services
     {
         private readonly IMessageRepository _messageRepository;
         private readonly IEncryptionService _encryptionService;
-        private readonly KeySet _keySet;
         private readonly Encoding _encoding;
+        private string _phoneNumber;
 
         public MessageService(
             IMessageRepository messageRepository, 
             IEncryptionService encryptionService, 
-            KeySet keySet,
-            Encoding encoding)
+            Encoding encoding,
+            string phoneNumber)
         {
             this._messageRepository = messageRepository;
             this._encryptionService = encryptionService;
-            this._keySet = keySet;
             this._encoding = encoding;
+            this._phoneNumber = phoneNumber;
         }
         
         public void PersistMessageLocally(Contact destination, string content)
@@ -33,12 +35,36 @@ namespace AirTransit_Core.Services
             });
         }
         
-        public Message SendMessage(Contact destination, string content)
+        public bool SendMessage(Contact destination, string content)
         {
-            var encryptedContent = this._encryptionService.Encrypt(content, destination);
+            MessageDTO messageDTO = new MessageDTO()
+            {
+                SenderPhoneNumber = _phoneNumber,
+                Content = content,
+                Timestamp = DateTime.Now
+            };
 
-            // Send message to server
-            throw new System.NotImplementedException();
+            string standard_message = JsonConvert.SerializeObject(messageDTO);
+            string encrypted_standard_message = _encryptionService.Encrypt(standard_message, destination);
+
+            EncryptedMessage encryptedMessage = new EncryptedMessage()
+            {
+                Content = encrypted_standard_message,
+                DestinationPhoneNumber = destination.PhoneNumber
+            };
+
+            // Task task = ServerCommunication.CreateMessageAsync(encryptedMessage);
+            // task.Wait();
+            // string guid = task.Result;
+            string guid = "";
+
+            //Message message = new Message()
+            //{
+            //    Id = guid,
+
+            //}
+
+            return true;
         }
     }
 }
