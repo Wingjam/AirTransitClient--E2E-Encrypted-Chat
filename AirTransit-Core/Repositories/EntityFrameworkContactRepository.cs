@@ -12,12 +12,10 @@ namespace AirTransit_Core.Repositories
             messagingContext)
         {
             this._phoneNumber = phoneNumber;
-            
-            if (GetContact(this._phoneNumber) != null)
-            {
-                AddContact(new Contact(this._phoneNumber, "You"));
-                Commit();
-            }
+
+            if (GetContact(this._phoneNumber) == null) return;
+            AddContact(new Contact(this._phoneNumber, "You"));
+            Commit();
         }
 
         public IEnumerable<Contact> GetContacts()
@@ -32,7 +30,7 @@ namespace AirTransit_Core.Repositories
 
         public Contact GetContact(string phoneNumber)
         {
-            return this.MessagingContext.Contacts.SingleOrDefault(c => c.PhoneNumber == phoneNumber);
+            return this.MessagingContext.Contacts?.SingleOrDefault(c => c.PhoneNumber == phoneNumber);
         }
 
         public void AddContact(Contact contact)

@@ -21,32 +21,32 @@ namespace AirTransit_Core.Repositories
 
         public IEnumerable<Message> GetMessages(DateTime since)
         {
-            return this.MessagingContext.Messages
+            return this.MessagingContext.Messages?
                 .Where(m => m.Timestamp > since);
         }
 
         public IEnumerable<Message> GetMessages(int maximumNumberOfMessages)
         {
-            return this.MessagingContext.Messages
+            return this.MessagingContext.Messages?
                 .OrderBy(m => m.Timestamp)
                 .Take(maximumNumberOfMessages);
         }
 
         public IEnumerable<Message> GetMessages(Contact contact)
         {
-            return contact.Messages
+            return contact.Messages?
                 .Where(m => m.DestinationPhoneNumber == contact.PhoneNumber);
         }
 
         public IEnumerable<Message> GetMessages(Contact contact, DateTime since)
         {
-            return contact.Messages
+            return contact.Messages?
                 .Where(m => m.DestinationPhoneNumber == contact.PhoneNumber && m.Timestamp > since);
         }
 
         public IEnumerable<Message> GetMessages(Contact contact, int maximumNumberOfMessages)
         {
-            return contact.Messages
+            return contact.Messages?
                 .Where(m => m.DestinationPhoneNumber == contact.PhoneNumber)
                 .OrderBy(m => m.Timestamp)
                 .Take(maximumNumberOfMessages);
@@ -54,7 +54,7 @@ namespace AirTransit_Core.Repositories
 
         public Message GetLastMessage(Contact contact)
         {
-            return contact.Messages.OrderBy(m => m.Timestamp).First();
+            return contact.Messages?.OrderBy(m => m.Timestamp).First();
         }
 
         public void DeleteMessages(IEnumerable<Message> messages)
