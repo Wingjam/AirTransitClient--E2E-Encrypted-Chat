@@ -67,8 +67,7 @@ namespace AirTransit_Core.Services
                 Id = guid,
                 Content = content,
                 DestinationPhoneNumber = destination.PhoneNumber,
-                // TODO
-                //Sender = _contactRepository.GetSelf(),
+                Sender = _contactRepository.GetSelf(),
                 Timestamp = messageDTO.Timestamp
             };
 

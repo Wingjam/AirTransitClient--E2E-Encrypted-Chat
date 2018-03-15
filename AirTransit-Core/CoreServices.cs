@@ -38,8 +38,14 @@ namespace AirTransit_Core
             InitializeRepositories(phoneNumber, this._messagingContext);
             this._authenticationService = new AuthenticationService(this._keySetRepository);
 
-            var keySet = _authenticationService.SignUp(phoneNumber);
-            if (keySet == null) return false;
+            if (!_authenticationService.CheckIfKeysExist())
+            {
+                if (!_authenticationService.SignUp())
+                {
+                    // TODO This means a communication to the server failed, maybe send an exception instead?
+                    return false;
+                }
+            }
 
             MessageService = new MessageService(ContactRepository, MessageRepository, this._encryptionService, Encoding, phoneNumber);
             _messageFetcher = new MessageFetcher(ReceiveNewMessages, TimeSpan.FromMilliseconds(1000), phoneNumber, "TODO la authSignature de hugo");
