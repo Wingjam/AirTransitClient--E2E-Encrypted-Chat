@@ -2,6 +2,7 @@
 using AirTransit_Core.Repositories;
 using AirTransit_Core.Services;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,18 +18,19 @@ namespace AirTransit_Core
         public IMessageService MessageService { get; private set; }
         public Encoding Encoding { get; } = Encoding.UTF8;
         
-        private readonly BlockingCollection<string> _blockingCollection;
+        private readonly BlockingCollection<Message> _blockingCollection;
         
         private IAuthenticationService _authenticationService;
         private IKeySetRepository _keySetRepository;
         private MessagingContext _messagingContext;
+        private MessageFetcher _messageFetcher;
         private IEncryptionService _encryptionService;
 
         public static string SERVER_ADDRESS = "jo2server.ddns.net:5000";
         
         public CoreServices()
         {
-            _blockingCollection = new BlockingCollection<string>();
+            _blockingCollection = new BlockingCollection<Message>();
         }
 
         public bool Init(string phoneNumber)
@@ -39,26 +41,62 @@ namespace AirTransit_Core
 
             var keySet = _authenticationService.SignUp(phoneNumber);
             if (keySet == null) return false;
-            InitializeServices(keySet);
+
+            MessageService = new MessageService(MessageRepository, this._encryptionService, Encoding);
             _messageFetcher = new MessageFetcher(ReceiveNewMessages, TimeSpan.FromMilliseconds(1000), phoneNumber, "TODO la authSignature de hugo");
             return true;
 
         }
 
-        private void ReceiveNewMessages(IEnumerable<EncryptedMessage> encryptedMessage)
+        private void ReceiveNewMessages(IEnumerable<EncryptedMessage> encryptedMessages)
         {
-            foreach (EncryptedMessage encryptMessage in encryptedMessage)
+            foreach (EncryptedMessage encryptedMessage in encryptedMessages)
             {
                 // 1. decrypt message
+                // TODO : utiliser le vrai decrypt. et avoir une fonction qui prend le raw message decrypt et qui le tranforme en un vrai objet message.
+                encryptedMessage.Content = ""; //= RSA.Decrypt(encryptMessage);
+                MessageDTO decryptedMessage = StringToMessageDTO(encryptedMessage.Content);
+                // 1.5 Validate that message with its signature
+                // TODO decrypt la signature avec la clef publique du sender.
+                if (decryptedMessage.Signature != encryptedMessage.DestinationPhoneNumber)
+                {
+                    // If the signature is invalid, we skip this message.
+                    continue;
+                }
 
-                // 2. Ajouter le contact s'il n'existe pas deja
+                // 2. Add the contact if he do not exist
+                Contact senderContact = ContactRepository.GetContact(decryptedMessage.SenderPhoneNumber);
+                if (senderContact == null)
+                {
+                    senderContact = new Contact(decryptedMessage.SenderPhoneNumber, decryptedMessage.SenderPhoneNumber);
+                    ContactRepository.AddContact(senderContact);
+                }
+                // 3. Add the message in the BD
+                Message message = new Message()
+                {
+                    Id = encryptedMessage.Guid,
+                    Sender = senderContact,
+                    Content = decryptedMessage.Content,
+                    DestinationPhoneNumber = encryptedMessage.DestinationPhoneNumber,
+                    Timestamp = decryptedMessage.Timestamp
+                };
+                MessageRepository.AddMessage(message);
 
-                // 3. Ajouter le message dans la BD
-
-                // 4. push le nouveau message créer dans la blocking collection
-                _blockingCollection.Add(new Message());
+                // 4. Push the new message in the blocking collection
+                _blockingCollection.Add(message);
             }
 
+        }
+
+        private MessageDTO StringToMessageDTO(string decryptedMessage)
+        {
+            MessageDTO messageDTO = JsonConvert.DeserializeObject<MessageDTO>(decryptedMessage);
+            return messageDTO;
+        }
+
+        private string MessageDTOToString(MessageDTO message)
+        {
+            return JsonConvert.SerializeObject(message);
         }
 
         public BlockingCollection<Message> GetBlockingCollection()
@@ -72,11 +110,6 @@ namespace AirTransit_Core
             MessageRepository = new EntityFrameworkMessageRepository(messagingContext);
             this._keySetRepository = new EntityFrameworkKeySetRepository(phoneNumber, this._messagingContext);
             this._encryptionService = new RSAEncryptionService(this._keySetRepository, this.Encoding);
-        }
-
-        private void InitializeServices(KeySet keySet)
-        {
-            MessageService = new MessageService(MessageRepository, this._encryptionService, keySet, Encoding);
         }
     }
 }

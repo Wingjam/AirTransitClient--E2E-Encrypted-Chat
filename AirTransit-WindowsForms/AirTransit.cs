@@ -18,7 +18,7 @@ namespace AirTransit_WindowsForms
         private delegate void StringArgReturningVoidDelegate(string text);
         private string phoneNumber;
         private List<Contact> contacts;
-        private BlockingCollection<string> newMessageIds;
+        private BlockingCollection<Message> newMessageIds;
         private CoreServices Core;
         private IContactRepository ContactRepo;
         private IMessageRepository MessageRepo;
@@ -62,7 +62,7 @@ namespace AirTransit_WindowsForms
                         while (!newMessageIds.IsCompleted)
                         {
 
-                            string messageId = null;
+                            Message message = null;
                             // Blocks if number.Count == 0
                             // IOE means that Take() was called on a completed collection.
                             // Some other thread can call CompleteAdding after we pass the
@@ -71,13 +71,13 @@ namespace AirTransit_WindowsForms
                             // loop will break on the next iteration.
                             try
                             {
-                                messageId = newMessageIds.Take();
+                                message = newMessageIds.Take();
                             }
                             catch (InvalidOperationException) { }
 
-                            if (messageId != null)
+                            if (message != null)
                             {
-                                ProcessNewMessage(messageId);
+                                ProcessNewMessage(message);
                             }
                         }
                     });
@@ -104,11 +104,6 @@ namespace AirTransit_WindowsForms
             }
             else
                 MessageBox.Show("Plz select a contact before sending a message.");
-        }
-
-        private void TxtContactList_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            ShowCurrentContactConvo();
         }
 
         private void BtnContact_Click(object sender, EventArgs e)
@@ -164,9 +159,8 @@ namespace AirTransit_WindowsForms
             }
         }
 
-        private void ProcessNewMessage(string messageId)
+        private void ProcessNewMessage(Message newMessage)
         {
-            Message newMessage = MessageRepo.GetMessage(messageId);
 
             Contact senderContact = newMessage.Sender;
             if (senderContact == ListContacts.SelectedItem as Contact)
@@ -204,6 +198,16 @@ namespace AirTransit_WindowsForms
                 contacts = value;
                 ListContacts.DataSource = contacts;
             }
+        }
+
+        private void ListContacts_MouseClick(object sender, MouseEventArgs e)
+        {
+            ShowCurrentContactConvo();
+        }
+
+        private void ListContacts_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            // TODO rename the contact
         }
     }
 }
