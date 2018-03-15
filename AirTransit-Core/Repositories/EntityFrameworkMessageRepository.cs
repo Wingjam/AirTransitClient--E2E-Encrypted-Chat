@@ -32,29 +32,36 @@ namespace AirTransit_Core.Repositories
                 .Take(maximumNumberOfMessages);
         }
 
+        private IEnumerable<Message> GetMessagesExchangeWithContact(Contact contact)
+        {
+            return this.MessagingContext.Messages?
+                .Where(m => m.DestinationPhoneNumber == contact.PhoneNumber
+                             || m.Sender.PhoneNumber == contact.PhoneNumber);
+        }
+
         public IEnumerable<Message> GetMessages(Contact contact)
         {
-            return contact.Messages?
-                .Where(m => m.DestinationPhoneNumber == contact.PhoneNumber);
+            return GetMessagesExchangeWithContact(contact);
         }
 
         public IEnumerable<Message> GetMessages(Contact contact, DateTime since)
         {
-            return contact.Messages?
-                .Where(m => m.DestinationPhoneNumber == contact.PhoneNumber && m.Timestamp > since);
+            return GetMessagesExchangeWithContact(contact)?
+                .Where(m => m.Timestamp > since);
         }
 
         public IEnumerable<Message> GetMessages(Contact contact, int maximumNumberOfMessages)
         {
-            return contact.Messages?
-                .Where(m => m.DestinationPhoneNumber == contact.PhoneNumber)
+            return GetMessagesExchangeWithContact(contact)?
                 .OrderBy(m => m.Timestamp)
                 .Take(maximumNumberOfMessages);
         }
 
         public Message GetLastMessage(Contact contact)
         {
-            return contact.Messages?.OrderBy(m => m.Timestamp).First();
+            return GetMessagesExchangeWithContact(contact)?
+                .OrderBy(m => m.Timestamp)
+                .First();
         }
 
         public void DeleteMessages(IEnumerable<Message> messages)
