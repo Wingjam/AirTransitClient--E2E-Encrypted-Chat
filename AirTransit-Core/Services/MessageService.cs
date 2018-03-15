@@ -4,7 +4,7 @@ using AirTransit_Core.Repositories;
 
 namespace AirTransit_Core.Services
 {
-    class MessageService : IMessageService
+    internal class MessageService : IMessageService
     {
         private readonly IMessageRepository _messageRepository;
         private readonly IEncryptionService _encryptionService;

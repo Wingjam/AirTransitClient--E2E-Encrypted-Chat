@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AirTransit_Core.Repositories
 {
-    class MessagingContext : DbContext
+    internal class MessagingContext : DbContext
     {
         public MessagingContext(DbContextOptions<MessagingContext> options) : base(options)
         {

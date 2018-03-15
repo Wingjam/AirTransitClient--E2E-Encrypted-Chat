@@ -121,6 +121,10 @@ namespace AirTransit_Console
             if (_currentContact == null)
             {
                 SelectContact();
+                if (_currentContact == null)
+                {
+                    return;
+                }
             }
             
             var answer = GetTextInput($"Send message to {_currentContact.Name} " +
@@ -139,6 +143,10 @@ namespace AirTransit_Console
             if (_currentContact == null)
             {
                 SelectContact();
+                if (_currentContact == null)
+                {
+                    return;
+                }
             }
             
             WriteContactHeader();
@@ -148,14 +156,20 @@ namespace AirTransit_Console
             
             do
             {
-                var messages = messagesToFetch == -1 
-                    ? _coreServices.MessageRepository.GetMessages(_currentContact) 
-                    : _coreServices.MessageRepository.GetMessages(_currentContact, messagesToFetch);
+                var messages = messagesToFetch == -1
+                    ? _coreServices.MessageRepository.GetMessages(_currentContact)?.ToList()
+                    : _coreServices.MessageRepository.GetMessages(_currentContact, messagesToFetch)?.ToList();
+                if (messages == null || !messages.Any())
+                {
+                    WriteToConsole("No messages.\nUse SM to send some :)");
+                    break;
+                }
+
                 foreach (var message in messages)
                 {
                     WriteToConsole($"{message.Timestamp} - {message.Content}");
                 }
-                
+
                 var getLongerHistory = GetTextInput($"Get longer message history? (y/n/all): ").ToLower();
                 switch (getLongerHistory)
                 {
@@ -211,7 +225,11 @@ namespace AirTransit_Console
         {
             Contact result = null;
             var contacts = _coreServices.ContactRepository.GetContacts().ToList();
-            if (contacts.Count <= 0) return null;
+            if (contacts.Count <= 0)
+            {
+                WriteToConsole("No contacts.\nUse AC to add some :)");
+                return null;
+            }
             
             do
             {
@@ -220,7 +238,12 @@ namespace AirTransit_Console
                     WriteToConsole($"{i}. {contacts[i].Name} ({contacts[i].PhoneNumber})");
                 }
                 
-                var contactId = GetIntInput($"Choose a contact (0-{contacts.Count - 1}): ");
+                var contactId = GetIntInput($"Choose a contact (0-{contacts.Count - 1})(-1 to cancel): ");
+                if (contactId == -1)
+                {
+                    break;
+                }
+                
                 if (contactId < 0 || contactId > contacts.Count - 1)
                 {
                     WriteInvalidInput();
@@ -238,6 +261,11 @@ namespace AirTransit_Console
             WriteDecoratedText("Your contacts");
             
             var contacts = _coreServices.ContactRepository.GetContacts().ToList();
+            if (!contacts.Any())
+            {
+                WriteToConsole("No contacts.\nUse AC to add some :)");
+            }
+            
             foreach (var contact in contacts)
             {
                 WriteToConsole($"{contact.Name} ({contact.PhoneNumber})");

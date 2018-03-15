@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 namespace AirTransit_Core.Services
 {
-    class AuthenticationService : IAuthenticationService
+    internal class AuthenticationService : IAuthenticationService
     {
         private readonly IKeySetRepository _keySetRepository;
 
