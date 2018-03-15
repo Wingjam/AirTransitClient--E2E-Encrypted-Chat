@@ -42,7 +42,7 @@ namespace AirTransit_Core
             var keySet = _authenticationService.SignUp(phoneNumber);
             if (keySet == null) return false;
 
-            MessageService = new MessageService(MessageRepository, this._encryptionService, Encoding);
+            MessageService = new MessageService(MessageRepository, this._encryptionService, Encoding, phoneNumber);
             _messageFetcher = new MessageFetcher(ReceiveNewMessages, TimeSpan.FromMilliseconds(1000), phoneNumber, "TODO la authSignature de hugo");
             return true;
 
