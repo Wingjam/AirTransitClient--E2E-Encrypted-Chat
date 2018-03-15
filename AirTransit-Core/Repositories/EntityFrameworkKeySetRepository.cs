@@ -37,13 +37,8 @@ namespace AirTransit_Core.Repositories
 
             return keySet;
         }
-<<<<<<< Updated upstream
 
         private static KeySet CreateRSAKeyPair(string phoneNumber)
-=======
-    
-        private KeySet CreateRSAKeyPair(string phoneNumber)
->>>>>>> Stashed changes
         {
             using (var rsa = RSA.Create())
             {
