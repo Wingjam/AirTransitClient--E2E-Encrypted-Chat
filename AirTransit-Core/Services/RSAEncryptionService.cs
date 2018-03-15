@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using AirTransit_Core.Models;
-using Newtonsoft.Json;
+using AirTransit_Core.Repositories;
 
-namespace AirTransit_Core.Repositories
+namespace AirTransit_Core.Services
 {
     class RSAEncryptionService : IEncryptionService
     {
