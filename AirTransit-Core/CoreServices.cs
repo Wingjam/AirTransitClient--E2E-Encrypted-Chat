@@ -18,17 +18,18 @@ namespace AirTransit_Core
         public Encoding Encoding { get; } = Encoding.UTF8;
         
         private readonly IEncryptionService _encryptionService;
-        private readonly BlockingCollection<string> _blockingCollection;
+        private readonly BlockingCollection<Message> _blockingCollection;
         
         private IAuthenticationService _authenticationService;
         private IKeySetRepository _keySetRepository;
         private MessagingContext _messagingContext;
+        private MessageFetcher _messageFetcher;
         
         public static string SERVER_ADDRESS = "servermartineau.com";
         
         public CoreServices()
         {
-            _blockingCollection = new BlockingCollection<string>();
+            _blockingCollection = new BlockingCollection<Message>();
             this._encryptionService = new RSAEncryptionService();
         }
 
@@ -42,13 +43,30 @@ namespace AirTransit_Core
             if (keySet != null)
             {
                 InitializeServices(keySet);
+                _messageFetcher = new MessageFetcher(ReceiveNewMessages, TimeSpan.FromMilliseconds(1000), phoneNumber, "TODO la authSignature de hugo");
                 return true;
             }
 
             return false;
         }
 
-        public BlockingCollection<string> GetBlockingCollection()
+        private void ReceiveNewMessages(IEnumerable<EncryptedMessage> encryptedMessage)
+        {
+            foreach (EncryptedMessage encryptMessage in encryptedMessage)
+            {
+                // 1. decrypt message
+
+                // 2. Ajouter le contact s'il n'existe pas deja
+
+                // 3. Ajouter le message dans la BD
+
+                // 4. push le nouveau message créer dans la blocking collection
+                _blockingCollection.Add(new Message());
+            }
+
+        }
+
+        public BlockingCollection<Message> GetBlockingCollection()
         {
             return _blockingCollection;
         }
