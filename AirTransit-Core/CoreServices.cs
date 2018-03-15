@@ -18,18 +18,19 @@ namespace AirTransit_Core
         public IMessageService MessageService { get; private set; }
         public Encoding Encoding { get; } = Encoding.UTF8;
         
-        private readonly BlockingCollection<string> _blockingCollection;
+        private readonly BlockingCollection<Message> _blockingCollection;
         
         private IAuthenticationService _authenticationService;
         private IKeySetRepository _keySetRepository;
         private MessagingContext _messagingContext;
+        private MessageFetcher _messageFetcher;
         private IEncryptionService _encryptionService;
 
         public static string SERVER_ADDRESS = "jo2server.ddns.net:5000";
         
         public CoreServices()
         {
-            _blockingCollection = new BlockingCollection<string>();
+            _blockingCollection = new BlockingCollection<Message>();
         }
 
         public bool Init(string phoneNumber)
@@ -52,8 +53,8 @@ namespace AirTransit_Core
             {
                 // 1. decrypt message
                 // TODO : utiliser le vrai decrypt. et avoir une fonction qui prend le raw message decrypt et qui le tranforme en un vrai objet message.
-                encryptedMessage.EncryptedMessageContent = ""; //= RSA.Decrypt(encryptMessage);
-                MessageDTO decryptedMessage = StringToMessageDTO(encryptedMessage.EncryptedMessageContent);
+                encryptedMessage.Content = ""; //= RSA.Decrypt(encryptMessage);
+                MessageDTO decryptedMessage = StringToMessageDTO(encryptedMessage.Content);
                 // 1.5 Validate that message with its signature
                 // TODO decrypt la signature avec la clef publique du sender.
                 if (decryptedMessage.Signature != encryptedMessage.DestinationPhoneNumber)
