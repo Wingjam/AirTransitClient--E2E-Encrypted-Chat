@@ -16,23 +16,15 @@ namespace AirTransit_Core.Repositories
             this._clientPhoneNumber = clientPhoneNumber;
         }
         
-        public KeySet GetOrCreateKeySet()
+        public KeySet GetKeySet()
         {
-            var keySet = this.MessagingContext.KeySet.SingleOrDefault(ks => ks.PhoneNumber == this._clientPhoneNumber);
-            if (keySet != null) return keySet;
-            keySet = CreateRSAKeyPair(this._clientPhoneNumber);
-            MessagingContext.KeySet.Add(keySet);
-
-            return keySet;
+            return this.MessagingContext.KeySet.SingleOrDefault(ks => ks.PhoneNumber == this._clientPhoneNumber);
         }
-        
-        public KeySet GetOrCreateKeySet(string phoneNumber)
-        {
-            var keySet = this.MessagingContext.KeySet.SingleOrDefault(ks => ks.PhoneNumber == phoneNumber);
-            if (keySet != null) return keySet;
-            keySet = CreateRSAKeyPair(phoneNumber);
-            MessagingContext.KeySet.Add(keySet);
 
+        public KeySet CreateKeySet()
+        {
+            var keySet = CreateRSAKeyPair(this._clientPhoneNumber);
+            MessagingContext.KeySet.Add(keySet);
             return keySet;
         }
 

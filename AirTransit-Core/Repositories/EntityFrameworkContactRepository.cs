@@ -42,6 +42,12 @@ namespace AirTransit_Core.Repositories
             Commit();
         }
 
+        public void UpdateContact(Contact contact)
+        {
+            this.MessagingContext.Contacts.Update(contact);
+            Commit();
+        }
+
         public void DeleteContact(Contact contact)
         {
             this.MessagingContext.Remove(contact);

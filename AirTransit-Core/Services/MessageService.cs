@@ -4,6 +4,7 @@ using System.Text;
 using AirTransit_Core.Models;
 using AirTransit_Core.Repositories;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace AirTransit_Core.Services
 {
@@ -28,23 +29,24 @@ namespace AirTransit_Core.Services
             this._encoding = encoding;
             this._phoneNumber = phoneNumber;
         }
-        
-        public void PersistMessageLocally(Contact destination, string content)
-        {
-            this._messageRepository.AddMessage(new Message
-            {
-                Content = content,
-                DestinationPhoneNumber = destination.PhoneNumber,
-            });
-        }
-        
+
         public bool SendMessage(Contact destination, string content)
         {
+            if (destination.PublicKey == null)
+            {
+                // Get the public key of the contact through a server call
+                Task<Registry> taskRegistry = ServerCommunication.GetRegistryAsync(destination.PhoneNumber);
+                taskRegistry.Wait();
+                destination.PublicKey = taskRegistry.Result.PublicKey;
+                _contactRepository.UpdateContact(destination);
+            }
+
             MessageDTO messageDTO = new MessageDTO()
             {
                 SenderPhoneNumber = _phoneNumber,
                 Content = content,
-                Timestamp = DateTime.Now
+                Timestamp = DateTime.Now,
+                Signature = _encryptionService.GenerateSignature(destination.PhoneNumber)
             };
 
             string standard_message = JsonConvert.SerializeObject(messageDTO);
@@ -53,19 +55,24 @@ namespace AirTransit_Core.Services
             EncryptedMessage encryptedMessage = new EncryptedMessage()
             {
                 Content = encrypted_standard_message,
-                DestinationPhoneNumber = destination.PhoneNumber
+                DestinationPhoneNumber = destination.PhoneNumber,
             };
 
-            // Task task = ServerCommunication.CreateMessageAsync(encryptedMessage);
-            // task.Wait();
-            // string guid = task.Result;
-            string guid = "";
+            Task<string> task = ServerCommunication.CreateMessageAsync(encryptedMessage);
+            task.Wait();
+            string guid = task.Result;
+            
+            Message message = new Message()
+            {
+                Id = guid,
+                Content = content,
+                DestinationPhoneNumber = destination.PhoneNumber,
+                // TODO
+                //Sender = _contactRepository.GetSelf(),
+                Timestamp = messageDTO.Timestamp
+            };
 
-            //Message message = new Message()
-            //{
-            //    Id = guid,
-
-            //}
+            _messageRepository.AddMessage(message);
 
             return true;
         }

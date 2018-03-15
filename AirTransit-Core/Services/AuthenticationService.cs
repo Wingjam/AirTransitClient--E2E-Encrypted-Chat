@@ -14,15 +14,20 @@ namespace AirTransit_Core.Services
             this._keySetRepository = keySetRepository;
         }
 
-        public KeySet SignUp(string phoneNumber)
+        public bool CheckIfKeysExist()
         {
-            var keySet = this._keySetRepository.GetOrCreateKeySet(phoneNumber);
-            SendToServer(keySet.PublicKey);
-            return keySet;
+            return this._keySetRepository.GetKeySet() != null;
+        }
+
+        public bool SignUp()
+        {
+            var keySet = this._keySetRepository.CreateKeySet();
+            return SendToServer(keySet.PublicKey);
         }
 
         private bool SendToServer(string publicKey)
         {
+            // TODO
             return true;
         }
     }
