@@ -61,7 +61,7 @@ namespace AirTransit_Core.Repositories
         {
             return GetMessagesExchangeWithContact(contact)?
                 .OrderBy(m => m.Timestamp)
-                .First();
+                .FirstOrDefault();
         }
 
         public void DeleteMessages(IEnumerable<Message> messages)
