@@ -71,7 +71,7 @@ namespace AirTransit_Core
             ContactRepository = new EntityFrameworkContactRepository(phoneNumber, messagingContext);
             MessageRepository = new EntityFrameworkMessageRepository(messagingContext);
             this._keySetRepository = new EntityFrameworkKeySetRepository(phoneNumber, this._messagingContext);
-            this._encryptionService = new RSAEncryptionService(this._keySetRepository);
+            this._encryptionService = new RSAEncryptionService(this._keySetRepository, this.Encoding);
         }
 
         private void InitializeServices(KeySet keySet)

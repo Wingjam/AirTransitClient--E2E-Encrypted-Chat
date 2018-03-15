@@ -10,12 +10,53 @@ namespace AirTransit_Core.Repositories
     class RSAEncryptionService : IEncryptionService
     {
         private readonly IKeySetRepository _keySetRepository;
+        private readonly Encoding _encoding;
         private static readonly RSAEncryptionPadding RsaEncryptionPadding = RSAEncryptionPadding.Pkcs1;
-        private readonly Encoding _encoding = Encoding.UTF8;
 
-        public RSAEncryptionService(IKeySetRepository keySetRepository)
+        public RSAEncryptionService(IKeySetRepository keySetRepository, Encoding encoding)
         {
             this._keySetRepository = keySetRepository;
+            this._encoding = encoding;
+        }
+
+        public string GenerateSignature(string content)
+        {
+            try
+            {
+                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+                {
+                    var contentBytes = this._encoding.GetBytes(content);
+                    var clientKey = this._keySetRepository.GetOrCreateKeySet();
+                    rsa.FromXmlString(clientKey.PrivateKey);
+                    var signature = rsa.SignData(contentBytes, new SHA1CryptoServiceProvider());
+                    return this._encoding.GetString(signature);
+                }
+            }
+            catch (CryptographicException e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
+        }
+        
+        public bool VerifySignature(string dataToVerify, string signedData, Contact contact)
+        {
+            try
+            {
+                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+                {
+                    var dataToVerifyBytes = this._encoding.GetBytes(dataToVerify);
+                    var signedDataBytes = this._encoding.GetBytes(signedData);
+                    var clientKey = contact.PublicKey;
+                    rsa.FromXmlString(clientKey);
+                    return rsa.VerifyData(dataToVerifyBytes, new SHA1CryptoServiceProvider(), signedDataBytes);
+                }
+            }
+            catch (CryptographicException e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
         }
         
         public string Encrypt(string message, Contact contact)
