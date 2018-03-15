@@ -7,22 +7,20 @@ using Newtonsoft.Json;
 
 namespace AirTransit_Core.Repositories
 {
-    class EntityFrameworkKeySetRepository : EntityFrameworkRepository, IKeySetRepository
+    internal class EntityFrameworkKeySetRepository : EntityFrameworkRepository, IKeySetRepository
     {
         public EntityFrameworkKeySetRepository(MessagingContext messagingContext) : base(messagingContext) { }
         public KeySet GetOrCreateKeySet(string phoneNumber)
         {
             var keySet = this.MessagingContext.KeySet.SingleOrDefault(ks => ks.PhoneNumber == phoneNumber);
-            if (keySet == null)
-            {
-                keySet = CreateRSAKeyPair(phoneNumber);
-                MessagingContext.KeySet.Add(keySet);
-            }
+            if (keySet != null) return keySet;
+            keySet = CreateRSAKeyPair(phoneNumber);
+            MessagingContext.KeySet.Add(keySet);
 
             return keySet;
         }
 
-        private KeySet CreateRSAKeyPair(string phoneNumber)
+        private static KeySet CreateRSAKeyPair(string phoneNumber)
         {
             using (var rsa = RSA.Create())
             {

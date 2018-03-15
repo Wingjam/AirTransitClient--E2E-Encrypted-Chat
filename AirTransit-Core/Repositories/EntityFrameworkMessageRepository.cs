@@ -5,7 +5,7 @@ using AirTransit_Core.Models;
 
 namespace AirTransit_Core.Repositories
 {
-    class EntityFrameworkMessageRepository : EntityFrameworkRepository, IMessageRepository
+    internal class EntityFrameworkMessageRepository : EntityFrameworkRepository, IMessageRepository
     {
         public EntityFrameworkMessageRepository(MessagingContext messagingContext) : base(messagingContext) { }
 

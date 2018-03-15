@@ -4,7 +4,7 @@ using AirTransit_Core.Models;
 
 namespace AirTransit_Core.Repositories
 {
-    class EntityFrameworkContactRepository : EntityFrameworkRepository, IContactRepository
+    internal class EntityFrameworkContactRepository : EntityFrameworkRepository, IContactRepository
     {
         private string _phoneNumber;
 

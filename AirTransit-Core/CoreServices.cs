@@ -39,15 +39,12 @@ namespace AirTransit_Core
             InitializeRepositories(phoneNumber, this._messagingContext);
             this._authenticationService = new AuthenticationService(this._keySetRepository);
 
-            KeySet keySet = _authenticationService.SignUp(phoneNumber);
-            if (keySet != null)
-            {
-                InitializeServices(keySet);
-                _messageFetcher = new MessageFetcher(ReceiveNewMessages, TimeSpan.FromMilliseconds(1000), phoneNumber, "TODO la authSignature de hugo");
-                return true;
-            }
+            var keySet = _authenticationService.SignUp(phoneNumber);
+            if (keySet == null) return false;
+            InitializeServices(keySet);
+            _messageFetcher = new MessageFetcher(ReceiveNewMessages, TimeSpan.FromMilliseconds(1000), phoneNumber, "TODO la authSignature de hugo");
+            return true;
 
-            return false;
         }
 
         private void ReceiveNewMessages(IEnumerable<EncryptedMessage> encryptedMessage)
