@@ -23,7 +23,7 @@ namespace AirTransit_Core.Services
 
         private bool SendToServer(string publicKey)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }
