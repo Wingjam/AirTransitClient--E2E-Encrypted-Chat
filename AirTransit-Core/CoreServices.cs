@@ -24,7 +24,7 @@ namespace AirTransit_Core
         private IKeySetRepository _keySetRepository;
         private MessagingContext _messagingContext;
         
-        public static string SERVER_ADDRESS = "servermartineau.com";
+        public static string SERVER_ADDRESS = "jo2server.ddns.net:5000";
         
         public CoreServices()
         {
