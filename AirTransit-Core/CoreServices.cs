@@ -2,7 +2,6 @@
 using AirTransit_Core.Repositories;
 using AirTransit_Core.Services;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -42,7 +41,7 @@ namespace AirTransit_Core
             var keySet = _authenticationService.SignUp(phoneNumber);
             if (keySet == null) return false;
 
-            MessageService = new MessageService(MessageRepository, this._encryptionService, Encoding, phoneNumber);
+            MessageService = new MessageService(ContactRepository, MessageRepository, this._encryptionService, Encoding, phoneNumber);
             _messageFetcher = new MessageFetcher(ReceiveNewMessages, TimeSpan.FromMilliseconds(1000), phoneNumber, "TODO la authSignature de hugo");
             return true;
 
@@ -52,51 +51,12 @@ namespace AirTransit_Core
         {
             foreach (EncryptedMessage encryptedMessage in encryptedMessages)
             {
-                // 1. decrypt message
-                // TODO : utiliser le vrai decrypt. et avoir une fonction qui prend le raw message decrypt et qui le tranforme en un vrai objet message.
-                encryptedMessage.Content = ""; //= RSA.Decrypt(encryptMessage);
-                MessageDTO decryptedMessage = StringToMessageDTO(encryptedMessage.Content);
-                // 1.5 Validate that message with its signature
-                // TODO decrypt la signature avec la clef publique du sender.
-                if (decryptedMessage.Signature != encryptedMessage.DestinationPhoneNumber)
+                Message message = MessageService.ReceiveNewMessages(encryptedMessage);
+                if (message != null)
                 {
-                    // If the signature is invalid, we skip this message.
-                    continue;
+                    _blockingCollection.Add(message);
                 }
-
-                // 2. Add the contact if he do not exist
-                Contact senderContact = ContactRepository.GetContact(decryptedMessage.SenderPhoneNumber);
-                if (senderContact == null)
-                {
-                    senderContact = new Contact(decryptedMessage.SenderPhoneNumber, decryptedMessage.SenderPhoneNumber);
-                    ContactRepository.AddContact(senderContact);
-                }
-                // 3. Add the message in the BD
-                Message message = new Message()
-                {
-                    Id = encryptedMessage.Guid,
-                    Sender = senderContact,
-                    Content = decryptedMessage.Content,
-                    DestinationPhoneNumber = encryptedMessage.DestinationPhoneNumber,
-                    Timestamp = decryptedMessage.Timestamp
-                };
-                MessageRepository.AddMessage(message);
-
-                // 4. Push the new message in the blocking collection
-                _blockingCollection.Add(message);
             }
-
-        }
-
-        private MessageDTO StringToMessageDTO(string decryptedMessage)
-        {
-            MessageDTO messageDTO = JsonConvert.DeserializeObject<MessageDTO>(decryptedMessage);
-            return messageDTO;
-        }
-
-        private string MessageDTOToString(MessageDTO message)
-        {
-            return JsonConvert.SerializeObject(message);
         }
 
         public BlockingCollection<Message> GetBlockingCollection()

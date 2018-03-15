@@ -4,7 +4,7 @@ namespace AirTransit_Core.Models
 {
     public class EncryptedMessage
     {
-        [JsonProperty("id")]
+        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         public string Guid;
         [JsonProperty("PhoneNumber")]
         public string DestinationPhoneNumber;

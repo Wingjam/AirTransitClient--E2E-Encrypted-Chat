@@ -25,17 +25,26 @@ namespace AirTransit_Core.Repositories
 
         public Contact GetSelf()
         {
-            throw new System.NotImplementedException();
+            return MessagingContext.Contacts?
+                .Where(c => c.PhoneNumber == this._phoneNumber)
+                .SingleOrDefault();
         }
 
         public Contact GetContact(string phoneNumber)
         {
-            return this.MessagingContext.Contacts?.SingleOrDefault(c => c.PhoneNumber == phoneNumber);
+            return this.MessagingContext.Contacts?
+                .SingleOrDefault(c => c.PhoneNumber == phoneNumber);
         }
 
         public void AddContact(Contact contact)
         {
             this.MessagingContext.Contacts.Add(contact);
+            Commit();
+        }
+
+        public void UpdateContact(Contact contact)
+        {
+            this.MessagingContext.Contacts.Update(contact);
             Commit();
         }
 

@@ -10,6 +10,7 @@ namespace AirTransit_Core.Repositories
         Contact GetSelf();
         Contact GetContact(String phoneNumber);
         void AddContact(Contact contact);
+        void UpdateContact(Contact contact);
         void DeleteContact(Contact contact);
     }
 }

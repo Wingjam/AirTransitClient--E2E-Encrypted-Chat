@@ -25,7 +25,7 @@ namespace AirTransit_Core.Services
                 using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
                 {
                     var contentBytes = this._encoding.GetBytes(content);
-                    var clientKey = this._keySetRepository.GetOrCreateKeySet();
+                    var clientKey = this._keySetRepository.GetKeySet();
                     rsa.FromXmlString(clientKey.PrivateKey);
                     var signature = rsa.SignData(contentBytes, new SHA1CryptoServiceProvider());
                     return this._encoding.GetString(signature);
@@ -81,7 +81,7 @@ namespace AirTransit_Core.Services
     
         public string Decrypt(string encryptedMessage)
         {
-            var key = this._keySetRepository.GetOrCreateKeySet();
+            var key = this._keySetRepository.GetKeySet();
             var encryptedMessageBytes = _encoding.GetBytes(encryptedMessage);
             
             try

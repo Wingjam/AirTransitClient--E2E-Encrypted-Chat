@@ -173,7 +173,7 @@ namespace AirTransit_Console
                 var getLongerHistory = GetTextInput($"Get longer message history? (y/n/all): ").ToLower();
                 switch (getLongerHistory)
                 {
-                    case "n":
+                    case "y":
                         messagesToFetch += 10;
                         WriteContactHeader();
                         break;
