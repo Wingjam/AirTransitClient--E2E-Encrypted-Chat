@@ -7,6 +7,7 @@ namespace AirTransit_Core.Models
 {
     public class Contact
     {
+        public Contact() { }
         public Contact(string phoneNumber, string name)
         {
             PhoneNumber = phoneNumber;

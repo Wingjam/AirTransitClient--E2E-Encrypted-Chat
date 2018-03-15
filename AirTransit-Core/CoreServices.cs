@@ -34,12 +34,13 @@ namespace AirTransit_Core
 
         public bool Init(string phoneNumber)
         {
+            this._messagingContext = new DesignTimeDbContextFactory().CreateDbContext(new string[] { });
+            InitializeRepositories(phoneNumber, this._messagingContext);
+            this._authenticationService = new AuthenticationService(this._keySetRepository);
+
             KeySet keySet = _authenticationService.SignUp(phoneNumber);
             if (keySet != null)
             {
-                this._messagingContext = new DesignTimeDbContextFactory().CreateDbContext(new string[] { });
-
-                InitializeRepositories(phoneNumber, this._messagingContext);
                 InitializeServices(keySet);
                 return true;
             }
@@ -62,7 +63,6 @@ namespace AirTransit_Core
         private void InitializeServices(KeySet keySet)
         {
             MessageService = new MessageService(MessageRepository, this._encryptionService, keySet, Encoding);
-            this._authenticationService = new AuthenticationService(this._keySetRepository);
         }
     }
 }

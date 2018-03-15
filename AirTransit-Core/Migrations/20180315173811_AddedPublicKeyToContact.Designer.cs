@@ -11,9 +11,10 @@ using System;
 namespace AirTransit_Core.Migrations
 {
     [DbContext(typeof(MessagingContext))]
-    partial class MessagingContextModelSnapshot : ModelSnapshot
+    [Migration("20180315173811_AddedPublicKeyToContact")]
+    partial class AddedPublicKeyToContact
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -2,6 +2,7 @@
 {
     class KeySet
     {
+        public KeySet() { }
         public KeySet(string phoneNumber, string publicKey, string privateKey)
         {
             this.PhoneNumber = phoneNumber;
