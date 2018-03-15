@@ -11,7 +11,7 @@ namespace AirTransit_Core.Repositories
 
         public Message GetMessage(string id)
         {
-            return null;
+            return this.MessagingContext.Messages?.Where(m => m.Id == id).FirstOrDefault();
         }
 
         public IEnumerable<Message> GetMessages()
