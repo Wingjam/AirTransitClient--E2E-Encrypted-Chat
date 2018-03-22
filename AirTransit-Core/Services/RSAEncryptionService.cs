@@ -75,7 +75,7 @@ namespace AirTransit_Core.Services
                     rsa.FromXmlStringNetCore(contact.PublicKey);
                     encryptedData = rsa.Encrypt(messageBytes, RSAEncryptionPadding.Pkcs1);
                 }
-                return _encoding.GetString(encryptedData);
+                return Convert.ToBase64String(encryptedData);
             }
             catch (CryptographicException e)
             {
@@ -87,7 +87,7 @@ namespace AirTransit_Core.Services
         public string Decrypt(string encryptedMessage)
         {
             var key = this._keySetRepository.GetKeySet();
-            var encryptedMessageBytes = _encoding.GetBytes(encryptedMessage);
+            var encryptedMessageBytes = Convert.FromBase64String(encryptedMessage);
             
             try
             {
