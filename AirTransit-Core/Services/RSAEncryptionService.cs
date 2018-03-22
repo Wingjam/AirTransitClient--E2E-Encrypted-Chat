@@ -70,6 +70,7 @@ namespace AirTransit_Core.Services
                 {
                     rsa.FromXmlStringNetCore(contact.PublicKey);
                     encryptedData = rsa.Encrypt(messageBytes, RsaEncryptionPadding);
+                    encryptedData = rsa.Encrypt(messageBytes, RSAEncryptionPadding.Pkcs1);
                 }
                 return _encoding.GetString(encryptedData);
             }
@@ -92,6 +93,7 @@ namespace AirTransit_Core.Services
                 {
                     RSA.FromXmlStringNetCore(key.PrivateKey);
                     decryptedData = RSA.Decrypt(encryptedMessageBytes, RsaEncryptionPadding);
+                    decryptedData = RSA.Decrypt(encryptedMessageBytes, RSAEncryptionPadding.Pkcs1);
                 }
                 return _encoding.GetString(decryptedData);
             }
