@@ -129,7 +129,7 @@ namespace AirTransit_Console
             
             var answer = GetTextInput($"Send message to {_currentContact.Name} " +
                                       $"({_currentContact.PhoneNumber})? (y/n): ").ToLower();
-            if (answer == "n")
+            if (answer == "n" || answer == "no")
             {
                 SelectContact();
             }
