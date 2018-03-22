@@ -1,9 +1,7 @@
 ﻿using System.Linq;
-using System.Runtime.Serialization.Json;
 using System.Security.Cryptography;
-using System.Threading;
 using AirTransit_Core.Models;
-using Newtonsoft.Json;
+using AirTransit_Core.Utilities;
 
 namespace AirTransit_Core.Repositories
 {
@@ -32,8 +30,8 @@ namespace AirTransit_Core.Repositories
         {
             using (RSA rsa = RSA.Create())
             {
-                var publicKey = rsa.ToXmlString(false);
-                var privateKey = rsa.ToXmlString(true);
+                var publicKey = rsa.ToXmlStringNetCore(false);
+                var privateKey = rsa.ToXmlStringNetCore(true);
                 return new KeySet(phoneNumber, publicKey, privateKey);
             }
         }

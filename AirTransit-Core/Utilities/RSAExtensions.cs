@@ -6,9 +6,7 @@ namespace AirTransit_Core.Utilities
 {
     internal static class RSAExtensions
     {
-        #region XML
-
-        public static void FromXmlString(this RSA rsa, string xmlString)
+        public static void FromXmlStringNetCore(this RSA rsa, string xmlString)
         {
             RSAParameters parameters = new RSAParameters();
 
@@ -40,7 +38,7 @@ namespace AirTransit_Core.Utilities
             rsa.ImportParameters(parameters);
         }
 
-        public static string ToXmlString(this RSA rsa, bool includePrivateParameters)
+        public static string ToXmlStringNetCore(this RSA rsa, bool includePrivateParameters)
         {
             RSAParameters parameters = rsa.ExportParameters(includePrivateParameters);
 
@@ -54,7 +52,5 @@ namespace AirTransit_Core.Utilities
                   parameters.InverseQ != null ? Convert.ToBase64String(parameters.InverseQ) : null,
                   parameters.D != null ? Convert.ToBase64String(parameters.D) : null);
         }
-
-        #endregion
     }
 }

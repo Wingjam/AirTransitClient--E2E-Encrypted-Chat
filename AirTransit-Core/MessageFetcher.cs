@@ -28,12 +28,10 @@ namespace AirTransit_Core
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     var messages = Fetch();
-                    Console.WriteLine("###");
                     if (messages.Any())
                     {
                         onNewMessageAction(messages);
                     }
-                    Console.WriteLine("...");
                     Thread.Sleep(pollingRate);
                 }
             }, cancellationToken);
