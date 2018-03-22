@@ -23,6 +23,7 @@ namespace AirTransit_Core.Repositories
         {
             var keySet = CreateRSAKeyPair(this._clientPhoneNumber);
             MessagingContext.KeySet.Add(keySet);
+            Commit();
             return keySet;
         }
 
