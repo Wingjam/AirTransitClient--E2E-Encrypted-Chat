@@ -49,7 +49,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 48);
+            this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(118, 13);
             this.label1.TabIndex = 1;
@@ -58,7 +58,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 9);
+            this.label2.Location = new System.Drawing.Point(12, 48);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(76, 13);
             this.label2.TabIndex = 2;
@@ -66,14 +66,14 @@
             // 
             // TxtName
             // 
-            this.TxtName.Location = new System.Drawing.Point(12, 25);
+            this.TxtName.Location = new System.Drawing.Point(12, 64);
             this.TxtName.Name = "TxtName";
             this.TxtName.Size = new System.Drawing.Size(260, 20);
             this.TxtName.TabIndex = 3;
             // 
             // TxtPhoneNumber
             // 
-            this.TxtPhoneNumber.Location = new System.Drawing.Point(12, 64);
+            this.TxtPhoneNumber.Location = new System.Drawing.Point(12, 25);
             this.TxtPhoneNumber.Name = "TxtPhoneNumber";
             this.TxtPhoneNumber.Size = new System.Drawing.Size(260, 20);
             this.TxtPhoneNumber.TabIndex = 4;
