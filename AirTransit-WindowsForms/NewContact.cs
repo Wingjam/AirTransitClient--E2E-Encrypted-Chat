@@ -7,6 +7,7 @@ namespace AirTransit_WindowsForms
     {
         public string PhoneNumber;
         public string ContactName;
+        private string oldContactName;
 
         public NewContact() : this(null, null)
         {
@@ -14,13 +15,9 @@ namespace AirTransit_WindowsForms
 
         public NewContact(string PhoneNumber, string oldContactName)
         {
-            if (PhoneNumber != null)
-            {
-                TxtPhoneNumber.ReadOnly = true;
-                TxtPhoneNumber.Text = PhoneNumber;
-                TxtName.Text = oldContactName;
-            }
             InitializeComponent();
+            this.oldContactName = oldContactName;
+            this.PhoneNumber = PhoneNumber;
         }
 
         private void BtnAddContact_Click(object sender, EventArgs e)
@@ -48,6 +45,16 @@ namespace AirTransit_WindowsForms
         private bool PhoneNumberValid()
         {
             return FormLogin.PhoneNumberValid(TxtPhoneNumber.Text);
+        }
+
+        private void NewContact_Load(object sender, EventArgs e)
+        {
+            if (PhoneNumber != null)
+            {
+                TxtPhoneNumber.ReadOnly = true;
+                TxtPhoneNumber.Text = PhoneNumber;
+                TxtName.Text = oldContactName;
+            }
         }
     }
 }

@@ -95,6 +95,7 @@
             this.Name = "NewContact";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "New Contact";
+            this.Load += new System.EventHandler(this.NewContact_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
