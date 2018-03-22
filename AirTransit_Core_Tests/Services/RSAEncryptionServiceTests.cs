@@ -7,7 +7,7 @@ using AirTransit_Core.Utilities;
 using FakeItEasy;
 using Xunit;
 
-namespace AirTransit_Standard_Tests.Services
+namespace AirTransit_Core_Tests.Services
 {
     public class RSAEncryptionServiceTests
     {

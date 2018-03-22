@@ -7,11 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirTransit_WindowsForms", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirTransit_Console", "AirTransit-Console\AirTransit_Console.csproj", "{2FC54B89-D364-4089-A5FC-230B7588F1EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirTransit_Standard_Tests", "AirTransit_Core_Tests\AirTransit_Standard_Tests.csproj", "{52CB66B1-C377-4548-965E-BC04572811E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirTransit_Core_Tests", "AirTransit_Core_Tests\AirTransit_Core_Tests.csproj", "{52CB66B1-C377-4548-965E-BC04572811E9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9B6831F6-F0FA-4282-BA88-492BA8A9F4DA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirTransit_Core", "AirTransit_Standard\AirTransit_Core.csproj", "{BB191FC3-CF0D-4EAC-9187-923BDD656CE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirTransit_Core", "AirTransit_Core\AirTransit_Core.csproj", "{BB191FC3-CF0D-4EAC-9187-923BDD656CE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

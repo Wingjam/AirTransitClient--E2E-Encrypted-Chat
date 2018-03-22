@@ -6,7 +6,7 @@ using AirTransit_Core.Models;
 using AirTransit_Core.Repositories;
 using AirTransit_Core.Utilities;
 
-[assembly: InternalsVisibleTo("AirTransit_Standard_Tests")]
+[assembly: InternalsVisibleTo("AirTransit_Core_Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace AirTransit_Core.Services
 {

@@ -11,6 +11,6 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AirTransit_Standard\AirTransit_Core.csproj" />
+    <ProjectReference Include="..\AirTransit_Core\AirTransit_Core.csproj" />
   </ItemGroup>
 </Project>
