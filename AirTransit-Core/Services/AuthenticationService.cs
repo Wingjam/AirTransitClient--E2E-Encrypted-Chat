@@ -8,10 +8,12 @@ namespace AirTransit_Core.Services
     internal class AuthenticationService : IAuthenticationService
     {
         private readonly IKeySetRepository _keySetRepository;
+        private readonly string _phoneNumber;
 
-        public AuthenticationService(IKeySetRepository keySetRepository)
+        public AuthenticationService(IKeySetRepository keySetRepository, String phoneNumber)
         {
             this._keySetRepository = keySetRepository;
+            this._phoneNumber = phoneNumber;
         }
 
         public bool CheckIfKeysExist()
@@ -27,8 +29,12 @@ namespace AirTransit_Core.Services
 
         private bool SendToServer(string publicKey)
         {
-            // TODO
-            return true;
+            Registry registry = new Registry()
+            {
+                PublicKey = publicKey,
+                PhoneNumber = _phoneNumber
+            };
+            return ServerCommunication.CreateRegistry(registry);
         }
     }
 }
