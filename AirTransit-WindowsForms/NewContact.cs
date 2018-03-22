@@ -22,23 +22,24 @@ namespace AirTransit_WindowsForms
 
         private void BtnAddContact_Click(object sender, EventArgs e)
         {
-            if (PhoneNumberValid())
+            if (string.IsNullOrWhiteSpace(TxtName.Text))
             {
-                if (string.IsNullOrWhiteSpace(TxtName.Text))
-                {
-                    MessageBox.Show("The contact must not be empty.");
-                }
-                else
+                MessageBox.Show("The contact must not be empty.");
+            }
+            else
+            {
+                if (PhoneNumberValid())
                 {
                     PhoneNumber = TxtPhoneNumber.Text;
                     ContactName = TxtName.Text;
                     DialogResult = DialogResult.OK;
                     Close();
+
                 }
-            }
-            else
-            {
-                MessageBox.Show("The phone number must be 10 digits.");
+                else
+                {
+                    MessageBox.Show("The phone number must be 10 digits.");
+                }
             }
         }
 
