@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AirTransit_Core.Models;
-using AirTransit_Core;
+using AirTransit_Standard.Models;
+using AirTransit_Standard;
 
 namespace AirTransit_Console
 {

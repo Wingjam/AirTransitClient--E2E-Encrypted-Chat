@@ -1,0 +1,106 @@
+﻿using System;
+using System.Security.Cryptography;
+using System.Text;
+using AirTransit_Standard.Models;
+using AirTransit_Standard.Repositories;
+using AirTransit_Standard.Utilities;
+
+namespace AirTransit_Standard.Services
+{
+    class RSAEncryptionService : IEncryptionService
+    {
+        private readonly IKeySetRepository _keySetRepository;
+        private readonly Encoding _encoding;
+        private static readonly RSAEncryptionPadding RsaEncryptionPadding = RSAEncryptionPadding.Pkcs1;
+
+        public RSAEncryptionService(IKeySetRepository keySetRepository, Encoding encoding)
+        {
+            this._keySetRepository = keySetRepository;
+            this._encoding = encoding;
+        }
+
+        public string GenerateSignature(string content)
+        {
+            try
+            {
+                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+                {
+                    var contentBytes = this._encoding.GetBytes(content);
+                    var clientKey = this._keySetRepository.GetKeySet();
+                    rsa.FromXmlStringNetCore(clientKey.PrivateKey);
+                    var signature = rsa.SignData(contentBytes, new SHA1CryptoServiceProvider());
+                    return this._encoding.GetString(signature);
+                }
+            }
+            catch (CryptographicException e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
+        }
+        
+        public bool VerifySignature(string dataToVerify, string signedData, Contact contact)
+        {
+            try
+            {
+                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+                {
+                    var dataToVerifyBytes = this._encoding.GetBytes(dataToVerify);
+                    var signedDataBytes = this._encoding.GetBytes(signedData);
+                    var clientKey = contact.PublicKey;
+                    rsa.FromXmlStringNetCore(clientKey);
+                    return rsa.VerifyData(dataToVerifyBytes, new SHA1CryptoServiceProvider(), signedDataBytes);
+                }
+            }
+            catch (CryptographicException e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
+        }
+        
+        public string Encrypt(string message, Contact contact)
+        {
+            byte[] messageBytes = _encoding.GetBytes(message);
+            
+            try
+            {
+                byte[] encryptedData;
+                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+                {
+                    rsa.FromXmlStringNetCore(contact.PublicKey);
+                    encryptedData = rsa.Encrypt(messageBytes, RsaEncryptionPadding);
+                }
+                return _encoding.GetString(encryptedData);
+            }
+            catch (CryptographicException e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
+        }
+    
+        public string Decrypt(string encryptedMessage)
+        {
+            var key = this._keySetRepository.GetKeySet();
+            var encryptedMessageBytes = _encoding.GetBytes(encryptedMessage);
+            
+            try
+            {
+                byte[] decryptedData;
+                using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
+                {
+                    RSA.FromXmlStringNetCore(key.PrivateKey);
+                    decryptedData = RSA.Decrypt(encryptedMessageBytes, RsaEncryptionPadding);
+                }
+                return _encoding.GetString(decryptedData);
+            }
+            catch (CryptographicException e)
+            {
+                Console.WriteLine(e.ToString());
+    
+                return null;
+            }
+        }
+    }
+}

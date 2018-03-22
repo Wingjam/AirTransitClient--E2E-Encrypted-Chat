@@ -8,11 +8,12 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>AirTransit_WindowsForms</RootNamespace>
     <AssemblyName>AirTransit-WindowsForms</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -90,6 +91,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -109,9 +111,9 @@
     <Content Include="AvionVectored.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AirTransit-Core\AirTransit_Core.csproj">
-      <Project>{440f54f1-dbb2-48d2-b5a6-38d78e784cc3}</Project>
-      <Name>AirTransit_Core</Name>
+    <ProjectReference Include="..\AirTransit_Standard\AirTransit_Standard.csproj">
+      <Project>{bb191fc3-cf0d-4eac-9187-923bdd656ce3}</Project>
+      <Name>AirTransit_Standard</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

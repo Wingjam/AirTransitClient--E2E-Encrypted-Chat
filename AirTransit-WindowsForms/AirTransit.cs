@@ -4,12 +4,12 @@ using System.Collections.Concurrent;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using AirTransit_Core;
-using AirTransit_Core.Models;
-using AirTransit_Core.Repositories;
-using AirTransit_Core.Services;
-using Message = AirTransit_Core.Models.Message;
+using Message = AirTransit_Standard.Models.Message;
 using System.Threading.Tasks;
+using AirTransit_Standard.Models;
+using AirTransit_Standard;
+using AirTransit_Standard.Repositories;
+using AirTransit_Standard.Services;
 
 namespace AirTransit_WindowsForms
 {

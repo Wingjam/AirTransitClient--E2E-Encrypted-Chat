@@ -4,9 +4,6 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AirTransit-Core\AirTransit_Core.csproj">
-      <Project>{440F54F1-DBB2-48D2-B5A6-38D78E784CC3}</Project>
-      <Name>AirTransit_Core</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\AirTransit_Standard\AirTransit_Standard.csproj" />
   </ItemGroup>
 </Project>
