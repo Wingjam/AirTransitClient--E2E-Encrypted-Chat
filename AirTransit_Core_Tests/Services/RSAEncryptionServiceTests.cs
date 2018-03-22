@@ -74,7 +74,7 @@ namespace AirTransit_Core_Tests.Services
         #region Helpers
         private static KeySet GenerateValidRsaKeySet()
         {
-            using (var rsa = RSA.Create())
+            using (var rsa = new RSACryptoServiceProvider(RSAEncryptionService.KEY_SIZE))
             {
                 var publicKey = rsa.ToXmlStringNetCore(false);
                 var privateKey = rsa.ToXmlStringNetCore(true);

@@ -14,7 +14,8 @@ namespace AirTransit_Core.Services
     {
         private readonly IKeySetRepository _keySetRepository;
         private readonly Encoding _encoding;
-
+        internal static readonly int KEY_SIZE = 1024;
+            
         public RSAEncryptionService(IKeySetRepository keySetRepository, Encoding encoding)
         {
             this._keySetRepository = keySetRepository;
@@ -25,7 +26,7 @@ namespace AirTransit_Core.Services
         {
             try
             {
-                using (var rsa = new RSACryptoServiceProvider())
+                using (var rsa = new RSACryptoServiceProvider(KEY_SIZE))
                 {
                     var contentBytes = this._encoding.GetBytes(content);
                     var clientKey = this._keySetRepository.GetKeySet();
@@ -45,7 +46,7 @@ namespace AirTransit_Core.Services
         {
             try
             {
-                using (var rsa = new RSACryptoServiceProvider())
+                using (var rsa = new RSACryptoServiceProvider(KEY_SIZE))
                 {
                     var clientKey = contact.PublicKey;
                     rsa.FromXmlStringNetCore(clientKey);
@@ -73,7 +74,7 @@ namespace AirTransit_Core.Services
             try
             {
                 byte[] encryptedData;
-                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(KEY_SIZE))
                 {
                     rsa.FromXmlStringNetCore(contact.PublicKey);
                     encryptedData = rsa.Encrypt(messageBytes, RSAEncryptionPadding.Pkcs1);
@@ -95,7 +96,7 @@ namespace AirTransit_Core.Services
             try
             {
                 byte[] decryptedData;
-                using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
+                using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider(KEY_SIZE))
                 {
                     RSA.FromXmlStringNetCore(key.PrivateKey);
                     decryptedData = RSA.Decrypt(encryptedMessageBytes, RSAEncryptionPadding.Pkcs1);
