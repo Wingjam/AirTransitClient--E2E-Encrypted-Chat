@@ -34,7 +34,8 @@ namespace AirTransit_Core.Services
                 PublicKey = publicKey,
                 PhoneNumber = _phoneNumber
             };
-            return ServerCommunication.CreateRegistry(registry);
+            ServerCommunication.CreateRegistry(registry);
+            return true;
         }
     }
 }

@@ -1,93 +1,111 @@
 ﻿using AirTransit_Core.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
+using System.Text;
 
 namespace AirTransit_Core
 {
     public static class ServerCommunication
     {
         public static string ServerAddress = "http://jo2server.ddns.net:5000/";
-        private static readonly HttpClient Client = new HttpClient
-        {
-            BaseAddress = new Uri(ServerAddress),
-            DefaultRequestHeaders = {Accept = {new MediaTypeWithQualityHeaderValue("application/json")}}
-        };
+        private static readonly HttpClient Client = new HttpClient();
 
         // ===================
         // ===== Message =====
         // ===================
         public static string CreateMessage(EncryptedMessage message)
         {
-            HttpResponseMessage response = Client.PostAsJsonAsync("api/message", message).Result;
-
-            response.EnsureSuccessStatusCode();
-
-            // Deserialize the added message from the response body.
-            message = response.Content.ReadAsAsync<EncryptedMessage>().Result;
-            return message.Guid;
+            return PostAsJsonAsync<EncryptedMessage, EncryptedMessage>(Client, "api/message", message).Guid;
         }
 
         public static List<EncryptedMessage> GetMessages(string phoneNumber, string auth)
         {
-            List<EncryptedMessage> messages = null;
-            HttpResponseMessage response = Client.GetAsync($"api/message/{phoneNumber}?authSignature={auth}").Result;
-            if (response.IsSuccessStatusCode)
-            {
-                messages = response.Content.ReadAsAsync<List<EncryptedMessage>>().Result;
-            }
-            return messages;
+            return GetFromJsonAsync<List<EncryptedMessage>>(Client, $"api/message/{phoneNumber}?authSignature={auth}");
         }
 
         public static bool DeleteMessage(string id, string auth)
         {
-            HttpResponseMessage response = Client.DeleteAsync(
-                $"api/message/{id}?authSignature={auth}").Result;
-            return response.StatusCode == HttpStatusCode.NoContent;
+            return DeleteAsync(Client, $"api/message/{id}?authSignature={auth}");
         }
 
         // ====================
         // ===== Registry =====
         // ====================
-        public static bool CreateRegistry(Registry registry)
+        public static void CreateRegistry(Registry registry)
         {
-            HttpResponseMessage response = Client.PostAsJsonAsync(
-                "api/registry", registry).Result;
-            response.EnsureSuccessStatusCode();
-
-            return response.IsSuccessStatusCode;
+            // Will throw if server returns error
+            PostAsJsonAsync<Registry, Registry>(Client, "api/registry", registry);
         }
 
         public static Registry GetRegistry(string phoneNumber)
         {
-            Registry registry = null;
-            HttpResponseMessage response = Client.GetAsync($"api/registry/{phoneNumber}").Result;
-            if (response.IsSuccessStatusCode)
-            {
-                registry = response.Content.ReadAsAsync<Registry>().Result;
-            }
-            return registry;
+            return GetFromJsonAsync<Registry>(Client, $"api/registry/{phoneNumber}");
         }
 
         public static Registry UpdateRegistry(Registry registry)
         {
-            HttpResponseMessage response = Client.PutAsJsonAsync(
-                $"api/registry/{registry.PhoneNumber}", registry).Result;
-            response.EnsureSuccessStatusCode();
-
-            // Deserialize the updated registry from the response body.
-            registry = response.Content.ReadAsAsync<Registry>().Result;
-            return registry;
+            return PutAsJsonAsync<Registry, Registry>(Client, $"api/registry/{registry.PhoneNumber}", registry);
         }
 
         public static bool DeleteRegistry(string phoneNumber)
         {
-            HttpResponseMessage response = Client.DeleteAsync(
-                $"api/registry/{phoneNumber}").Result;
+            return DeleteAsync(Client, $"api/registry/{phoneNumber}");
+        }
+
+        public static R GetFromJsonAsync<R>(HttpClient client, String uri)
+        {
+            var response = client.GetAsync(BuildUri(uri), HttpCompletionOption.ResponseHeadersRead).Result;
+
+            response.EnsureSuccessStatusCode();
+
+            return DeserializeAsyncHttpReponse<R>(response);
+        }
+
+        public static R PostAsJsonAsync<T, R>(HttpClient client, string uri, T message)
+        {
+            var stringContent = new StringContent(JsonConvert.SerializeObject(message), Encoding.UTF8, "application/json");
+            var response = client.PostAsync(BuildUri(uri), stringContent).Result;
+
+            response.EnsureSuccessStatusCode();
+
+            return DeserializeAsyncHttpReponse<R>(response);
+        }
+
+        public static R PutAsJsonAsync<T, R>(HttpClient client, string uri, T message)
+        {
+            var stringContent = new StringContent(JsonConvert.SerializeObject(message), Encoding.UTF8, "application/json");
+            var response = client.PutAsync(BuildUri(uri), stringContent).Result;
+
+            response.EnsureSuccessStatusCode();
+
+            return DeserializeAsyncHttpReponse<R>(response);
+        }
+
+        public static bool DeleteAsync(HttpClient client, string uri)
+        {
+            HttpResponseMessage response = client.DeleteAsync(
+                BuildUri(uri)).Result;
             return response.StatusCode == HttpStatusCode.NoContent;
+        }
+
+        public static R DeserializeAsyncHttpReponse<R>(HttpResponseMessage response)
+        {
+            using (var stream = response.Content.ReadAsStreamAsync().Result)
+            using (var streamReader = new StreamReader(stream))
+            using (var jsonReader = new JsonTextReader(streamReader))
+            {
+                var serializer = new JsonSerializer();
+                return serializer.Deserialize<R>(jsonReader);
+            }
+        }
+
+        private static string BuildUri(string uri)
+        {
+            return ServerAddress + uri;
         }
     }
 }
