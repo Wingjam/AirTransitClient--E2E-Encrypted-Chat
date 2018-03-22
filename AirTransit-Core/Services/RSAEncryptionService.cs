@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using AirTransit_Core.Models;
 using AirTransit_Core.Repositories;
+using AirTransit_Core.Utilities;
 
 namespace AirTransit_Core.Services
 {
@@ -26,7 +27,7 @@ namespace AirTransit_Core.Services
                 {
                     var contentBytes = this._encoding.GetBytes(content);
                     var clientKey = this._keySetRepository.GetKeySet();
-                    rsa.FromXmlString(clientKey.PrivateKey);
+                    rsa.FromXmlStringNetCore(clientKey.PrivateKey);
                     var signature = rsa.SignData(contentBytes, new SHA1CryptoServiceProvider());
                     return this._encoding.GetString(signature);
                 }
@@ -47,7 +48,7 @@ namespace AirTransit_Core.Services
                     var dataToVerifyBytes = this._encoding.GetBytes(dataToVerify);
                     var signedDataBytes = this._encoding.GetBytes(signedData);
                     var clientKey = contact.PublicKey;
-                    rsa.FromXmlString(clientKey);
+                    rsa.FromXmlStringNetCore(clientKey);
                     return rsa.VerifyData(dataToVerifyBytes, new SHA1CryptoServiceProvider(), signedDataBytes);
                 }
             }
@@ -67,7 +68,7 @@ namespace AirTransit_Core.Services
                 byte[] encryptedData;
                 using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
                 {
-                    rsa.FromXmlString(contact.PublicKey);
+                    rsa.FromXmlStringNetCore(contact.PublicKey);
                     encryptedData = rsa.Encrypt(messageBytes, RsaEncryptionPadding);
                 }
                 return _encoding.GetString(encryptedData);
@@ -89,7 +90,7 @@ namespace AirTransit_Core.Services
                 byte[] decryptedData;
                 using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
                 {
-                    RSA.FromXmlString(key.PrivateKey);
+                    RSA.FromXmlStringNetCore(key.PrivateKey);
                     decryptedData = RSA.Decrypt(encryptedMessageBytes, RsaEncryptionPadding);
                 }
                 return _encoding.GetString(decryptedData);
