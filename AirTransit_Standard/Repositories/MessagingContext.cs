@@ -1,7 +1,7 @@
-﻿using AirTransit_Standard.Models;
+﻿using AirTransit_Core.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AirTransit_Standard.Repositories
+namespace AirTransit_Core.Repositories
 {
     internal class MessagingContext : DbContext
     {

@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
-namespace AirTransit_Standard.Migrations
+namespace AirTransit_Core.Migrations
 {
     public partial class AddedPublicKeyToContact : Migration
     {

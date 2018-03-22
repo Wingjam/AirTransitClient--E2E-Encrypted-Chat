@@ -1,4 +1,4 @@
-﻿namespace AirTransit_Standard.Repositories
+﻿namespace AirTransit_Core.Repositories
 {
     internal abstract class EntityFrameworkRepository
     {

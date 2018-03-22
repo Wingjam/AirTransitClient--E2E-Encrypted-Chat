@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace AirTransit_Standard.Models
+namespace AirTransit_Core.Models
 {
     public class EncryptedMessage
     {

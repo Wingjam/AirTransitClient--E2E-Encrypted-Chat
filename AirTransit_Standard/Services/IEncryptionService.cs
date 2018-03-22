@@ -1,6 +1,6 @@
-﻿using AirTransit_Standard.Models;
+﻿using AirTransit_Core.Models;
 
-namespace AirTransit_Standard.Services
+namespace AirTransit_Core.Services
 {
     public interface IEncryptionService
     {

@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirTransit_Standard_Tests",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9B6831F6-F0FA-4282-BA88-492BA8A9F4DA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirTransit_Standard", "AirTransit_Standard\AirTransit_Standard.csproj", "{BB191FC3-CF0D-4EAC-9187-923BDD656CE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirTransit_Core", "AirTransit_Standard\AirTransit_Core.csproj", "{BB191FC3-CF0D-4EAC-9187-923BDD656CE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

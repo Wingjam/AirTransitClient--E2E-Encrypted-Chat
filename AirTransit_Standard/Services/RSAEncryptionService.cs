@@ -2,13 +2,13 @@
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
-using AirTransit_Standard.Models;
-using AirTransit_Standard.Repositories;
-using AirTransit_Standard.Utilities;
+using AirTransit_Core.Models;
+using AirTransit_Core.Repositories;
+using AirTransit_Core.Utilities;
 
 [assembly: InternalsVisibleTo("AirTransit_Standard_Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
-namespace AirTransit_Standard.Services
+namespace AirTransit_Core.Services
 {
     class RSAEncryptionService : IEncryptionService
     {

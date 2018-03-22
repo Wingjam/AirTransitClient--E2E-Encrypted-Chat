@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using AirTransit_Standard.Models;
+using AirTransit_Core.Models;
 
-namespace AirTransit_Standard.Repositories
+namespace AirTransit_Core.Repositories
 {
     public interface IContactRepository
     {

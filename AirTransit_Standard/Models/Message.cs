@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace AirTransit_Standard.Models
+namespace AirTransit_Core.Models
 {
     public class Message
     {

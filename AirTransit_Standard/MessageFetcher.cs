@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AirTransit_Standard.Models;
-using Newtonsoft.Json;
+using AirTransit_Core.Models;
 
-namespace AirTransit_Standard
+namespace AirTransit_Core
 {
     public class MessageFetcher
     {

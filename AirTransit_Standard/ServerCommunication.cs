@@ -1,12 +1,11 @@
-﻿using AirTransit_Standard.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
+using AirTransit_Core.Models;
 
-namespace AirTransit_Standard
+namespace AirTransit_Core
 {
     public static class ServerCommunication
     {

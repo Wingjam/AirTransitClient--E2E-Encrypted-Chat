@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using AirTransit_Standard.Models;
+using AirTransit_Core.Models;
 
-namespace AirTransit_Standard.Services
+namespace AirTransit_Core.Services
 {
     public interface IMessageService
     {

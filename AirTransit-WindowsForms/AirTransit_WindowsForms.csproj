@@ -228,9 +228,9 @@
     <Content Include="AvionVectored.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AirTransit_Standard\AirTransit_Standard.csproj">
+    <ProjectReference Include="..\AirTransit_Standard\AirTransit_Core.csproj">
       <Project>{bb191fc3-cf0d-4eac-9187-923bdd656ce3}</Project>
-      <Name>AirTransit_Standard</Name>
+      <Name>AirTransit_Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

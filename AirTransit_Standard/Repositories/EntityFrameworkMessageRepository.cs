@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AirTransit_Standard.Models;
+using AirTransit_Core.Models;
 
-namespace AirTransit_Standard.Repositories
+namespace AirTransit_Core.Repositories
 {
     internal class EntityFrameworkMessageRepository : EntityFrameworkRepository, IMessageRepository
     {

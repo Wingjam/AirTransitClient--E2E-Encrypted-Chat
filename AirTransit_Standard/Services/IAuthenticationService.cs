@@ -1,7 +1,4 @@
-﻿using System;
-using AirTransit_Standard.Models;
-
-namespace AirTransit_Standard.Services
+﻿namespace AirTransit_Core.Services
 {
     interface IAuthenticationService
     {

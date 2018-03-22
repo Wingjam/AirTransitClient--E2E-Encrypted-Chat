@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace AirTransit_Standard.Models
+namespace AirTransit_Core.Models
 {
     public class Contact
     {
@@ -20,7 +17,7 @@ namespace AirTransit_Standard.Models
         public string PublicKey { get; set; }
         public ICollection<Message> Messages { get; }
 
-        public string ToString()
+        public override string ToString()
         {
             return $"{Name} ({PhoneNumber})";
         }

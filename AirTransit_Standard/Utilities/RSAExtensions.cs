@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Xml;
 
-namespace AirTransit_Standard.Utilities
+namespace AirTransit_Core.Utilities
 {
     internal static class RSAExtensions
     {

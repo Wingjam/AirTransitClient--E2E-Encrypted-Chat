@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Security.Cryptography;
-using AirTransit_Standard.Models;
-using AirTransit_Standard.Utilities;
+using AirTransit_Core.Models;
+using AirTransit_Core.Utilities;
 
-namespace AirTransit_Standard.Repositories
+namespace AirTransit_Core.Repositories
 {
     internal class EntityFrameworkKeySetRepository : EntityFrameworkRepository, IKeySetRepository
     {

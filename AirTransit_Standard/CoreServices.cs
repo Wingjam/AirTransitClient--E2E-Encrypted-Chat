@@ -1,14 +1,12 @@
-﻿using AirTransit_Standard.Models;
-using AirTransit_Standard.Repositories;
-using AirTransit_Standard.Services;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using AirTransit_Core.Models;
+using AirTransit_Core.Repositories;
+using AirTransit_Core.Services;
 
-namespace AirTransit_Standard
+namespace AirTransit_Core
 {
     public class CoreServices
     {

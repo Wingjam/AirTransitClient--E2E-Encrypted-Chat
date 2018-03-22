@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
 
-namespace AirTransit_Standard.Models
+namespace AirTransit_Core.Models
 {
     internal class MessageDTO
     {

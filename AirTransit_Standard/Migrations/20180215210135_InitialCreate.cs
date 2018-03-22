@@ -1,8 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace AirTransit_Standard.Migrations
+namespace AirTransit_Core.Migrations
 {
     public partial class InitialCreate : Migration
     {

@@ -1,9 +1,8 @@
 ﻿using System;
-using AirTransit_Standard.Models;
-using AirTransit_Standard.Repositories;
-using System.Security.Cryptography;
+using AirTransit_Core.Models;
+using AirTransit_Core.Repositories;
 
-namespace AirTransit_Standard.Services
+namespace AirTransit_Core.Services
 {
     internal class AuthenticationService : IAuthenticationService
     {

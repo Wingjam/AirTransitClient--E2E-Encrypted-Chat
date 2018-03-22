@@ -1,6 +1,6 @@
-﻿using AirTransit_Standard.Models;
+﻿using AirTransit_Core.Models;
 
-namespace AirTransit_Standard.Repositories
+namespace AirTransit_Core.Repositories
 {
     internal interface IKeySetRepository
     {

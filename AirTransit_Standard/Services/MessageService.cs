@@ -1,12 +1,10 @@
-﻿using System.Security.Cryptography;
-using System.Text;
 ﻿using System;
-using AirTransit_Standard.Models;
-using AirTransit_Standard.Repositories;
+using System.Text;
+using AirTransit_Core.Models;
+using AirTransit_Core.Repositories;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
 
-namespace AirTransit_Standard.Services
+namespace AirTransit_Core.Services
 {
     internal class MessageService : IMessageService
     {
