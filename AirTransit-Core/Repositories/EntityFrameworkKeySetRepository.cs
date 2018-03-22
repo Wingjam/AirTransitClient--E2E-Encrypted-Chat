@@ -30,7 +30,7 @@ namespace AirTransit_Core.Repositories
 
         private static KeySet CreateRSAKeyPair(string phoneNumber)
         {
-            using (var rsa = RSA.Create())
+            using (RSA rsa = RSA.Create())
             {
                 var publicKey = rsa.ToXmlString(false);
                 var privateKey = rsa.ToXmlString(true);
