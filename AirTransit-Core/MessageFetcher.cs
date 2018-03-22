@@ -47,34 +47,7 @@ namespace AirTransit_Core
 
         private IEnumerable<EncryptedMessage> Fetch()
         {
-            return null;
-        }
-
-        // Based on : https://stackoverflow.com/questions/8270464/best-way-to-call-a-json-webservice-from-a-net-console
-        // Returns JSON string
-        string GET(string url)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            try
-            {
-                WebResponse response = request.GetResponse();
-                using (Stream responseStream = response.GetResponseStream())
-                {
-                    StreamReader reader = new StreamReader(responseStream, System.Text.Encoding.UTF8);
-                    return reader.ReadToEnd();
-                }
-            }
-            catch (WebException ex)
-            {
-                WebResponse errorResponse = ex.Response;
-                using (Stream responseStream = errorResponse.GetResponseStream())
-                {
-                    StreamReader reader = new StreamReader(responseStream, System.Text.Encoding.GetEncoding("utf-8"));
-                    String errorText = reader.ReadToEnd();
-                    // log errorText
-                }
-                throw;
-            }
+            return ServerCommunication.GetMessages(PhoneNumber, AuthSignature);
         }
     }
 }
