@@ -11,7 +11,6 @@ namespace AirTransit_Core.Services
     {
         private readonly IKeySetRepository _keySetRepository;
         private readonly Encoding _encoding;
-        private static readonly RSAEncryptionPadding RsaEncryptionPadding = RSAEncryptionPadding.Pkcs1;
 
         public RSAEncryptionService(IKeySetRepository keySetRepository, Encoding encoding)
         {
@@ -23,13 +22,13 @@ namespace AirTransit_Core.Services
         {
             try
             {
-                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+                using (var rsa = new RSACryptoServiceProvider())
                 {
                     var contentBytes = this._encoding.GetBytes(content);
                     var clientKey = this._keySetRepository.GetKeySet();
                     rsa.FromXmlStringNetCore(clientKey.PrivateKey);
-                    var signature = rsa.SignData(contentBytes, new SHA1CryptoServiceProvider());
-                    return this._encoding.GetString(signature);
+                    var signature = rsa.SignData(contentBytes, CryptoConfig.MapNameToOID("SHA256"));
+                    return Convert.ToBase64String(signature);
                 }
             }
             catch (CryptographicException e)
@@ -39,17 +38,22 @@ namespace AirTransit_Core.Services
             }
         }
         
-        public bool VerifySignature(string dataToVerify, string signedData, Contact contact)
+        public bool VerifySignature(string signature, string signedData, Contact contact)
         {
             try
             {
-                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+                using (var rsa = new RSACryptoServiceProvider())
                 {
-                    var dataToVerifyBytes = this._encoding.GetBytes(dataToVerify);
-                    var signedDataBytes = this._encoding.GetBytes(signedData);
                     var clientKey = contact.PublicKey;
                     rsa.FromXmlStringNetCore(clientKey);
-                    return rsa.VerifyData(dataToVerifyBytes, new SHA1CryptoServiceProvider(), signedDataBytes);
+                    var signatureBytes = this._encoding.GetBytes(signature);
+                    var signedDataBytes = Convert.FromBase64String(signedData);
+                    
+                    var hash = new SHA256Managed();
+
+                    bool dataOK = rsa.VerifyData(signedDataBytes, CryptoConfig.MapNameToOID("SHA256"), signatureBytes);
+                    var hashedData = hash.ComputeHash(signedDataBytes);
+                    return rsa.VerifyHash(hashedData, CryptoConfig.MapNameToOID("SHA256"), signatureBytes);
                 }
             }
             catch (CryptographicException e)
@@ -69,7 +73,6 @@ namespace AirTransit_Core.Services
                 using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
                 {
                     rsa.FromXmlStringNetCore(contact.PublicKey);
-                    encryptedData = rsa.Encrypt(messageBytes, RsaEncryptionPadding);
                     encryptedData = rsa.Encrypt(messageBytes, RSAEncryptionPadding.Pkcs1);
                 }
                 return _encoding.GetString(encryptedData);
@@ -92,7 +95,6 @@ namespace AirTransit_Core.Services
                 using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
                 {
                     RSA.FromXmlStringNetCore(key.PrivateKey);
-                    decryptedData = RSA.Decrypt(encryptedMessageBytes, RsaEncryptionPadding);
                     decryptedData = RSA.Decrypt(encryptedMessageBytes, RSAEncryptionPadding.Pkcs1);
                 }
                 return _encoding.GetString(decryptedData);
