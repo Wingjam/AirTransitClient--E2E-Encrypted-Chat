@@ -19,5 +19,10 @@ namespace AirTransit_Core.Models
         public string Name { get; set; }
         public string PublicKey { get; set; }
         public ICollection<Message> Messages { get; }
+
+        public string ToString()
+        {
+            return $"{Name} ({PhoneNumber})";
+        }
     }
 }
