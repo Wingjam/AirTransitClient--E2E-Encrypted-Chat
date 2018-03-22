@@ -36,7 +36,23 @@ namespace AirTransit_Core_Tests.Services
             Assert.True(this._rsaEncryptionService.VerifySignature(signature, encryptedSignature, contact));
 
         }
+        
+        [Fact]
+        public void EncryptMessage_CanBeDecryptedSuccessfully()
+        {
+            var keySet = GenerateValidRsaKeySet();
+            A.CallTo(() => this._keySetRepository.GetKeySet()).Returns(keySet);
+            var message = "1234pouet";
+            
+            var contact = new Contact
+            {
+                PublicKey = keySet.PublicKey
+            };
+            
+            var encryptedMessage = this._rsaEncryptionService.Encrypt(message, contact);
+            Assert.Equal(message, this._rsaEncryptionService.Decrypt(encryptedMessage));
 
+        }
 
         #region Helpers
         private static KeySet GenerateValidRsaKeySet()
