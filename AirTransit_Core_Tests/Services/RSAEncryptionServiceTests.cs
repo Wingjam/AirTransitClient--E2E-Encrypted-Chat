@@ -1,13 +1,13 @@
 using System.Security.Cryptography;
 using System.Text;
-using AirTransit_Core.Models;
+using AirTransit_Standard.Models;
 using FakeItEasy;
 using Xunit;
-using AirTransit_Core.Repositories;
-using AirTransit_Core.Services;
-using AirTransit_Core.Utilities;
+using AirTransit_Standard.Repositories;
+using AirTransit_Standard.Services;
+using AirTransit_Standard.Utilities;
 
-namespace AirTransit_Core_Tests.Services
+namespace AirTransit_Standard_Tests.Services
 {
     public class RSAEncryptionServiceTests
     {

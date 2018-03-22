@@ -2,7 +2,7 @@
 
 namespace AirTransit_Standard.Repositories
 {
-    interface IKeySetRepository
+    internal interface IKeySetRepository
     {
         KeySet GetKeySet();
         KeySet CreateKeySet();
