@@ -13,6 +13,7 @@ namespace AirTransit_Console
         private Contact _currentContact;
         private const bool TEXTINPUTFOLLOWING = true;
         private const string VERSION = "1.0";
+        private string myPhoneNumber;
 
         public AirTransitConsole()
         {
@@ -28,8 +29,8 @@ namespace AirTransit_Console
             
             while (!loggedIn)
             {
-                var phoneNumber = GetPhoneInput("Please enter your phone number (10 digits): ");
-                loggedIn = _coreServices.Init(phoneNumber);
+                myPhoneNumber = GetPhoneInput("Please enter your phone number (10 digits): ");
+                loggedIn = _coreServices.Init(myPhoneNumber);
             }
             
             ShowMenuOptions();
@@ -167,9 +168,16 @@ namespace AirTransit_Console
 
                 foreach (var message in messages)
                 {
-                    WriteToConsole($"{message.Timestamp} - {message.Content}");
+                    var sender = message.DestinationPhoneNumber != myPhoneNumber ? "You" : _currentContact.Name;
+                    WriteToConsole($"{message.Timestamp} ({sender}) - {message.Content}");
                 }
 
+                if (messagesToFetch == -1 || messages.Count < messagesToFetch)
+                {
+                    WriteToConsole("All caught up!");
+                    break;
+                }
+                
                 var getLongerHistory = GetTextInput($"Get longer message history? (y/n/all): ").ToLower();
                 switch (getLongerHistory)
                 {
