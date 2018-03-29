@@ -56,12 +56,13 @@ namespace AirTransit_Core_Tests.Services
 
         }
 
-        [Fact]
-        public void Encrypt_WithLongMessage_CanBeDecryptedSuccessfully()
+        [Theory]
+        [InlineData("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")]
+        [InlineData("{\"Content\":\"allo\",\"SenderPhoneNumber\":\"8198888888\",\"Signature\":\"imB0iiYKTr4lxaXdSRp/Wyuyqk2jjT6EdWlRaSCjPYrPZwsy7JT8VuixqLSyTsbehyW9nT3bARxVpadl0VZ9qfBfyOojyM75qkJRY0a+8oyaRXM7ahFreZR3jrGVbGV+ZhvmbvabQnLdmSZ2LAEhbWUfaZBx1uQfB5/I48zRMNZ7NUARK9f1etdRzPWWO3ApvdgrSmasaZ5N5xPtp6oU0jWOF9EF9q4kDQhj4rnYSBmS7tOwkhZ7Mj6ywe+HkSM2hGSCGSvShXPqtFB3E3Mp/MyiqVHsV2fzqGOkBwtM6zf7S5lWqBl5PGPx4SFqk5uSGVuLKOVOTXv65pIPmpUprA==\",\"Timestamp\":\"2018-03-22T16:29:14.317983-04:00\"}")]
+        public void Encrypt_WithLongMessage_CanBeDecryptedSuccessfully(string longMessage)
         {
             var keySet = GenerateValidRsaKeySet();
             A.CallTo(() => this._keySetRepository.GetKeySet()).Returns(keySet);
-            var longMessage = "{\"Content\":\"allo\",\"SenderPhoneNumber\":\"8198888888\",\"Signature\":\"imB0iiYKTr4lxaXdSRp/Wyuyqk2jjT6EdWlRaSCjPYrPZwsy7JT8VuixqLSyTsbehyW9nT3bARxVpadl0VZ9qfBfyOojyM75qkJRY0a+8oyaRXM7ahFreZR3jrGVbGV+ZhvmbvabQnLdmSZ2LAEhbWUfaZBx1uQfB5/I48zRMNZ7NUARK9f1etdRzPWWO3ApvdgrSmasaZ5N5xPtp6oU0jWOF9EF9q4kDQhj4rnYSBmS7tOwkhZ7Mj6ywe+HkSM2hGSCGSvShXPqtFB3E3Mp/MyiqVHsV2fzqGOkBwtM6zf7S5lWqBl5PGPx4SFqk5uSGVuLKOVOTXv65pIPmpUprA==\",\"Timestamp\":\"2018-03-22T16:29:14.317983-04:00\"}";
 
             var contact = new Contact
             {
@@ -71,7 +72,6 @@ namespace AirTransit_Core_Tests.Services
             var encryptedMessage = this._rsaEncryptionService.Encrypt(longMessage, contact);
             var decryptedMessage = this._rsaEncryptionService.Decrypt(encryptedMessage);
             Assert.Equal(longMessage, decryptedMessage);
-
         }
 
         #region SplitMessage
