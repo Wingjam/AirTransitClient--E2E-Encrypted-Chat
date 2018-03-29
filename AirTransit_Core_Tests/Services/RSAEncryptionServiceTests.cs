@@ -23,6 +23,7 @@ namespace AirTransit_Core_Tests.Services
             this._rsaEncryptionService = new RSAEncryptionService(this._keySetRepository, this._encoding);
         }
         
+        #region GenerateSignature
         [Fact]
         public void GenerateSignature_WithGivenPrivateKey_ShouldBeVerifiableWithAssociatedPublicKey()
         {
@@ -38,9 +39,11 @@ namespace AirTransit_Core_Tests.Services
             
             Assert.True(this._rsaEncryptionService.VerifySignature(signature, encryptedSignature, contact));
         }
+        #endregion
         
+        #region Encrypt
         [Fact]
-        public void EncryptMessage_WithShortMessage_CanBeDecryptedSuccessfully()
+        public void Encrypt_WithShortMessage_CanBeDecryptedSuccessfully()
         {
             var keySet = GenerateValidRsaKeySet();
             A.CallTo(() => this._keySetRepository.GetKeySet()).Returns(keySet);
@@ -73,6 +76,7 @@ namespace AirTransit_Core_Tests.Services
             var decryptedMessage = this._rsaEncryptionService.Decrypt(encryptedMessage);
             Assert.Equal(longMessage, decryptedMessage);
         }
+        #endregion
 
         #region SplitMessage
         [Fact]
@@ -96,7 +100,6 @@ namespace AirTransit_Core_Tests.Services
             Assert.Equal(splittedMessage.Count(), 1);
         }
         #endregion
-        
         
         #region Helpers
         private static KeySet GenerateValidRsaKeySet()

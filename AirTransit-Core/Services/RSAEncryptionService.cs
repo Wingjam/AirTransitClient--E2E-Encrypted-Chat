@@ -17,8 +17,9 @@ namespace AirTransit_Core.Services
     {
         private readonly IKeySetRepository _keySetRepository;
         private readonly Encoding _encoding;
+        private static readonly int ENCRYPTED_CHUNK_SIZE = 256;
+
         internal static readonly int KEY_SIZE = 2048;
-        internal static readonly int ENCRYPTED_CHUNK_SIZE = 256;
             
         public RSAEncryptionService(IKeySetRepository keySetRepository, Encoding encoding)
         {
@@ -56,12 +57,8 @@ namespace AirTransit_Core.Services
                     rsa.FromXmlStringNetCore(clientKey);
                     var signatureBytes = this._encoding.GetBytes(signature);
                     var signedDataBytes = Convert.FromBase64String(signedData);
-                    
-                    var hash = new SHA256Managed();
 
-                    bool dataOK = rsa.VerifyData(signedDataBytes, CryptoConfig.MapNameToOID("SHA256"), signatureBytes);
-                    var hashedData = hash.ComputeHash(signedDataBytes);
-                    return dataOK && rsa.VerifyHash(hashedData, CryptoConfig.MapNameToOID("SHA256"), signatureBytes);
+                    return rsa.VerifyData(signatureBytes, CryptoConfig.MapNameToOID("SHA256"), signedDataBytes);
                 }
             }
             catch (CryptographicException e)
@@ -84,7 +81,7 @@ namespace AirTransit_Core.Services
             
             try
             {
-                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(KEY_SIZE))
+                using (var rsa = new RSACryptoServiceProvider(KEY_SIZE))
                 {
                     rsa.FromXmlStringNetCore(contact.PublicKey);
                     var encryptedData = rsa.Encrypt(messageBytes, RSAEncryptionPadding.Pkcs1);
@@ -105,7 +102,7 @@ namespace AirTransit_Core.Services
             
             try
             {
-                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(KEY_SIZE))
+                using (var rsa = new RSACryptoServiceProvider(KEY_SIZE))
                 {
                     rsa.FromXmlStringNetCore(key.PrivateKey);
                     var decryptedData = SplitMessage(encryptedMessageBytes, ENCRYPTED_CHUNK_SIZE)
