@@ -49,26 +49,7 @@ namespace AirTransit_Core_Tests.Services
             A.CallTo(() => this._keySetRepository.GetKeySet()).Returns(keySet);
             var encryptedSignature = this._rsaEncryptionService.GenerateSignature(signature);
             
-            Assert.Equal(encryptedSignature.Length, RSAEncryptionService.ENCRYPTED_CHUNK_SIZE);
-        }
-        
-        [Theory]
-        [InlineData("vrm pas long")]
-        [InlineData("1")]
-        [InlineData("un message pas mal plus long qui a un peu moins que 256 bytes")]
-        public void Encrypt_WithMessageLengthUnderMaxChunkSize_ShouldBeOfTheSameLength(string message)
-        {
-            var keySet = GenerateValidRsaKeySet();
-            A.CallTo(() => this._keySetRepository.GetKeySet()).Returns(keySet);
-            
-            var contact = new Contact
-            {
-                PublicKey = keySet.PublicKey
-            };
-            
-            var encryptedMessage = this._rsaEncryptionService.Encrypt(message, contact);
-            
-            Assert.Equal(RSAEncryptionService.ENCRYPTED_CHUNK_SIZE, encryptedMessage.Length);
+            Assert.Equal(RSAEncryptionService.ENCRYPTED_CHUNK_SIZE, encryptedSignature.Length);
         }
         
         [Fact]
