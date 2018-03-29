@@ -101,7 +101,8 @@ namespace AirTransit_Core_Tests.Services
             };
 
             var encryptedMessage = this._rsaEncryptionService.Encrypt(longMessage, contact);
-            Assert.Equal(longMessage, this._rsaEncryptionService.Decrypt(encryptedMessage));
+            var decryptedMessage = this._rsaEncryptionService.Decrypt(encryptedMessage);
+            Assert.Equal(longMessage, decryptedMessage);
 
         }
 
