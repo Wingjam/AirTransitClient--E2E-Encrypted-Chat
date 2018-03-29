@@ -62,7 +62,7 @@ namespace AirTransit_Core.Services
 
                     bool dataOK = rsa.VerifyData(signedDataBytes, CryptoConfig.MapNameToOID("SHA256"), signatureBytes);
                     var hashedData = hash.ComputeHash(signedDataBytes);
-                    return rsa.VerifyHash(hashedData, CryptoConfig.MapNameToOID("SHA256"), signatureBytes);
+                    return dataOK && rsa.VerifyHash(hashedData, CryptoConfig.MapNameToOID("SHA256"), signatureBytes);
                 }
             }
             catch (CryptographicException e)

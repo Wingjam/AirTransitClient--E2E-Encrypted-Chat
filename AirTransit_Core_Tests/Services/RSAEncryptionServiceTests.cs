@@ -43,7 +43,7 @@ namespace AirTransit_Core_Tests.Services
         [Theory]
         [InlineData("1234pouet")]
         [InlineData("une osti d'affaire que tu veux mettre comme signature pas qui a pas vraiment rapport genre.")]
-        public void GenerateSignature_ReturnedSignature_ShouldAlwaysBeOfTheSameLength(string signature)
+        public void GenerateSignature_WithSignatureOfAnyLength_ShouldAlwaysBeOfTheSameLength(string signature)
         {
             var keySet = GenerateValidRsaKeySet();
             A.CallTo(() => this._keySetRepository.GetKeySet()).Returns(keySet);
