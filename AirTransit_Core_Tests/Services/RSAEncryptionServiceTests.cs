@@ -37,19 +37,6 @@ namespace AirTransit_Core_Tests.Services
             };
             
             Assert.True(this._rsaEncryptionService.VerifySignature(signature, encryptedSignature, contact));
-
-        }
-        
-        [Theory]
-        [InlineData("1234pouet")]
-        [InlineData("une osti d'affaire que tu veux mettre comme signature pas qui a pas vraiment rapport genre.")]
-        public void GenerateSignature_WithSignatureOfAnyLength_ShouldAlwaysBeOfTheSameLength(string signature)
-        {
-            var keySet = GenerateValidRsaKeySet();
-            A.CallTo(() => this._keySetRepository.GetKeySet()).Returns(keySet);
-            var encryptedSignature = this._rsaEncryptionService.GenerateSignature(signature);
-            
-            Assert.Equal(RSAEncryptionService.ENCRYPTED_CHUNK_SIZE, encryptedSignature.Length);
         }
         
         [Fact]
@@ -105,7 +92,7 @@ namespace AirTransit_Core_Tests.Services
         public void SplitMessage_WithStringShorterThanChunkSize_ShouldReturnOneChunk()
         {
             var longMessage = "1234pouet";
-            var splittedMessage = this._rsaEncryptionService.SplitMessage(this._encoding.GetBytes(longMessage), RSAEncryptionService.MAX_ENCRYPTION_CHUNK_SIZE);
+            var splittedMessage = this._rsaEncryptionService.SplitMessage(this._encoding.GetBytes(longMessage), 1000);
             Assert.Equal(splittedMessage.Count(), 1);
         }
         #endregion
