@@ -68,7 +68,7 @@ namespace AirTransit_Core_Tests.Services
             
             var encryptedMessage = this._rsaEncryptionService.Encrypt(message, contact);
             
-            Assert.Equal(encryptedMessage.Length, RSAEncryptionService.ENCRYPTED_CHUNK_SIZE);
+            Assert.Equal(RSAEncryptionService.ENCRYPTED_CHUNK_SIZE, encryptedMessage.Length);
         }
         
         [Fact]
