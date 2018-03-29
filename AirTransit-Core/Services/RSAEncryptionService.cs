@@ -74,9 +74,9 @@ namespace AirTransit_Core.Services
         
         internal IEnumerable<byte[]> SplitMessage(byte[] message, int chunkSize)
         {
-            int chunkCount = message.Length / chunkSize + 1;
+            int chunkCount = (int)Math.Ceiling((double)message.Length / chunkSize);
             for (int i = 0; i < chunkCount; ++i)
-                yield return message.Skip(i).Take(chunkSize).ToArray();
+                yield return message.Skip(i * chunkSize).Take(chunkSize).ToArray();
         }
         
         public string Encrypt(string message, Contact contact)
