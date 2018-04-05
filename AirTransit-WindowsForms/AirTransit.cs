@@ -16,6 +16,8 @@ namespace AirTransit_WindowsForms
     public partial class AirTransit : Form
     {
         private delegate void StringArgReturningVoidDelegate(string text);
+        private delegate void MessageArgReturningVoidDelegate(Message text);
+
         private string phoneNumber;
         private ConcurrentBag<Contact> contacts;
         private BlockingCollection<Message> newMessageIds;
@@ -99,9 +101,16 @@ namespace AirTransit_WindowsForms
         {
             if (selectedContact != null)
             {
-                MessageService.SendMessage(selectedContact, TxtInput.Text);
-                PrintMessage(MessageRepo.GetLastMessage(selectedContact));
-                TxtInput.ResetText();
+                if (string.IsNullOrWhiteSpace(TxtInput.Text))
+                {
+                    MessageBox.Show("The message must not be empty.");
+                }
+                else
+                {
+                    MessageService.SendMessage(selectedContact, TxtInput.Text);
+                    PrintMessage(MessageRepo.GetLastMessage(selectedContact));
+                    TxtInput.ResetText();
+                }
             }
             else
                 MessageBox.Show("Plz select a contact before sending a message.");
@@ -132,21 +141,30 @@ namespace AirTransit_WindowsForms
 
         private void ShowConvo(Contact contact)
         {
-            Txtconversation.Text = "";
-            MessageRepo.GetMessages(contact).ToList().ForEach(PrintMessage);
+            Txtconversation.ResetText();
+            MessageRepo?.GetMessages(contact)?.ToList().ForEach(PrintMessage);
         }
 
         private void PrintMessage(Message message)
         {
-            bool currentlyUser = message.DestinationPhoneNumber != PhoneNumber;
-            Txtconversation.ForeColor = currentlyUser ? UserColor : ContactColor;
-            if (WasUser != currentlyUser || Txtconversation.TextLength == 0)
+            if (message == null) return;
+            if (Txtconversation.InvokeRequired)
             {
-                AppendTextSafely($"{message.Sender.Name} :");
-                WasUser = currentlyUser;
+                MessageArgReturningVoidDelegate d = PrintMessage;
+                Invoke(d, message);
             }
+            else
+            {
+                bool currentlyUser = message.DestinationPhoneNumber != PhoneNumber;
+                Txtconversation.SelectionColor = currentlyUser ? UserColor : ContactColor;
+                if (WasUser != currentlyUser || Txtconversation.TextLength == 0)
+                {
+                    AppendTextSafely($"{message.Sender.Name} :");
+                    WasUser = currentlyUser;
+                }
 
-            AppendTextSafely(message.Content + Environment.NewLine);
+                AppendTextSafely(message.Content + Environment.NewLine);
+            }
         }
 
         private void AppendTextSafely(string message)
@@ -167,7 +185,7 @@ namespace AirTransit_WindowsForms
         {
 
             Contact senderContact = newMessage.Sender;
-            if (senderContact == selectedContact)
+            if (senderContact.Id == selectedContact.Id)
             {
                 PrintMessage(newMessage);
             }
@@ -220,12 +238,14 @@ namespace AirTransit_WindowsForms
                     selectedContact.Name = newContact.ContactName;
                     ContactRepo.UpdateContact(selectedContact);
                 }
+                Contacts = new ConcurrentBag<Contact>(ContactRepo.GetContacts().ToList());
             }
         }
 
         private void ListContacts_SelectedValueChanged(object sender, EventArgs e)
         {
-            selectedContact = ListContacts.SelectedValue as Contact;
+            selectedContact = ListContacts.SelectedItem as Contact;
+            ShowCurrentContactConvo();
         }
     }
 }
