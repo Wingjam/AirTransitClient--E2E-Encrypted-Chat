@@ -87,7 +87,7 @@ namespace AirTransit_Core.Services
                 {
                     rsa.FromXmlStringNetCore(contact.PublicKey);
                     var encryptedData = SplitMessage(messageBytes, MAX_ENCRYPTION_CHUNK_SIZE)
-                        .SelectMany(chunk => rsa.Encrypt(chunk, true));
+                        .SelectMany(chunk => rsa.Encrypt(chunk, RSAEncryptionPadding.Pkcs1));
                     return Convert.ToBase64String(encryptedData.ToArray());
                 }
             }
@@ -109,7 +109,7 @@ namespace AirTransit_Core.Services
                 {
                     rsa.FromXmlStringNetCore(key.PrivateKey);
                     var decryptedData = SplitMessage(encryptedMessageBytes, ENCRYPTED_CHUNK_SIZE)
-                        .SelectMany(chunk => rsa.Decrypt(chunk, true));
+                        .SelectMany(chunk => rsa.Decrypt(chunk, RSAEncryptionPadding.Pkcs1));
                     return _encoding.GetString(decryptedData.ToArray());
                 }
             }
