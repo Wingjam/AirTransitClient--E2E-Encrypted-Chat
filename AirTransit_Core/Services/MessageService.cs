@@ -118,8 +118,7 @@ namespace AirTransit_Core.Services
 
         private MessageDTO StringToMessageDTO(string decryptedMessage)
         {
-            //MessageDTO messageDTO = JsonConvert.DeserializeObject<MessageDTO>(decryptedMessage);
-            return new MessageDTO();
+            return JsonConvert.DeserializeObject<MessageDTO>(decryptedMessage);
         }
 
         private string MessageDTOToString(MessageDTO message)

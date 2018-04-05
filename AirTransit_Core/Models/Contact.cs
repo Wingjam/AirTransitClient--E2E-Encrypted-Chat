@@ -15,7 +15,6 @@ namespace AirTransit_Core.Models
         public string PhoneNumber { get; set; }
         public string Name { get; set; }
         public string PublicKey { get; set; }
-        public ICollection<Message> Messages { get; }
 
         public override string ToString()
         {
