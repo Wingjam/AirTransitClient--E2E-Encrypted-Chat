@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Security.Cryptography;
 using AirTransit_Core.Models;
+using AirTransit_Core.Services;
 using AirTransit_Core.Utilities;
 
 namespace AirTransit_Core.Repositories
@@ -29,7 +30,7 @@ namespace AirTransit_Core.Repositories
 
         private static KeySet CreateRSAKeyPair(string phoneNumber)
         {
-            using (RSA rsa = RSA.Create())
+            using (var rsa = new RSACryptoServiceProvider(RSAEncryptionService.KEY_SIZE))
             {
                 var publicKey = rsa.ToXmlStringNetCore(false);
                 var privateKey = rsa.ToXmlStringNetCore(true);

@@ -18,10 +18,10 @@ namespace AirTransit_Core.Services
     {
         private readonly IKeySetRepository _keySetRepository;
         private readonly Encoding _encoding;
-        private static readonly int MAX_ENCRYPTION_CHUNK_SIZE = 50;
-        private static readonly int ENCRYPTED_CHUNK_SIZE = 128;
+        private static readonly int MAX_ENCRYPTION_CHUNK_SIZE = 245;
+        private static readonly int ENCRYPTED_CHUNK_SIZE = 256;
 
-        internal static readonly int KEY_SIZE = 1024;
+        internal static readonly int KEY_SIZE = 2048;
             
         public RSAEncryptionService(IKeySetRepository keySetRepository, Encoding encoding)
         {
