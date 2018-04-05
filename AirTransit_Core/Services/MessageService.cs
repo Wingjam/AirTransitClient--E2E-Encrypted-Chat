@@ -116,10 +116,13 @@ namespace AirTransit_Core.Services
             if (_messageRepository.GetMessage(message.Id) == null)
             {
                 _messageRepository.AddMessage(message);
-            }
 
-            // 4. Push the new message in the blocking collection
-            return message;
+                // 4. Push the new message in the blocking collection
+                return message;
+            }
+            
+            // This message was already known
+            return null;
         }
 
         private MessageDTO StringToMessageDTO(string decryptedMessage)

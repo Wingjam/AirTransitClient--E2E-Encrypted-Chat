@@ -17,12 +17,14 @@ namespace AirTransit_Core
         
         private readonly BlockingCollection<Message> _blockingCollection;
         
-        private IAuthenticationService _authenticationService;
-        private IKeySetRepository _keySetRepository;
-        private MessagingContext _messagingContext;
+        private IAuthenticationService AuthenticationService;
+        private IKeySetRepository KeySetRepository;
+        private MessagingContext MessagingContext;
         private MessageFetcher _messageFetcher;
-        private IEncryptionService _encryptionService;
-        
+        private IEncryptionService EncryptionService;
+
+        private IMessageService FetcherMessageService;
+
         public CoreServices()
         {
             _blockingCollection = new BlockingCollection<Message>();
@@ -30,31 +32,30 @@ namespace AirTransit_Core
 
         public bool Init(string phoneNumber)
         {
-            this._messagingContext = new DesignTimeDbContextFactory().CreateDbContext(new string[] { });
-            InitializeRepositories(phoneNumber, this._messagingContext);
-            this._authenticationService = new AuthenticationService(this._keySetRepository, phoneNumber);
+            InitializeRepositories(phoneNumber);
+            InitializeFetcherDependencies(phoneNumber);
 
-            if (!_authenticationService.CheckIfKeysExist())
+            if (!AuthenticationService.CheckIfKeysExist())
             {
-                if (!_authenticationService.SignUp())
+                if (!AuthenticationService.SignUp())
                 {
                     // TODO This means a communication to the server failed, maybe send an exception instead?
                     return false;
                 }
             }
 
-            MessageService = new MessageService(ContactRepository, MessageRepository, this._encryptionService, Encoding, phoneNumber);
-            String signature = _encryptionService.GenerateSignature(phoneNumber);
-            _messageFetcher = new MessageFetcher(ReceiveNewMessages, TimeSpan.FromMilliseconds(1000), phoneNumber, signature);
-            return true;
+            String signature = EncryptionService.GenerateSignature(phoneNumber);
 
+            _messageFetcher = new MessageFetcher(ReceiveNewMessages, TimeSpan.FromMilliseconds(1000), phoneNumber, signature);
+
+            return true;
         }
 
         private void ReceiveNewMessages(IEnumerable<EncryptedMessage> encryptedMessages)
         {
             foreach (EncryptedMessage encryptedMessage in encryptedMessages)
             {
-                Message message = MessageService.ReceiveNewMessages(encryptedMessage);
+                Message message = FetcherMessageService.ReceiveNewMessages(encryptedMessage);
                 if (message != null)
                 {
                     _blockingCollection.Add(message);
@@ -67,12 +68,26 @@ namespace AirTransit_Core
             return _blockingCollection;
         }
 
-        private void InitializeRepositories(string phoneNumber, MessagingContext messagingContext)
+        private void InitializeRepositories(string phoneNumber)
         {
-            ContactRepository = new EntityFrameworkContactRepository(phoneNumber, messagingContext);
-            MessageRepository = new EntityFrameworkMessageRepository(messagingContext);
-            this._keySetRepository = new EntityFrameworkKeySetRepository(phoneNumber, this._messagingContext);
-            this._encryptionService = new RSAEncryptionService(this._keySetRepository, this.Encoding);
+            MessagingContext = new DesignTimeDbContextFactory().CreateDbContext(new string[] { });
+            ContactRepository = new EntityFrameworkContactRepository(phoneNumber, MessagingContext);
+            MessageRepository = new EntityFrameworkMessageRepository(MessagingContext);
+            KeySetRepository = new EntityFrameworkKeySetRepository(phoneNumber, this.MessagingContext);
+            EncryptionService = new RSAEncryptionService(this.KeySetRepository, this.Encoding);
+            AuthenticationService = new AuthenticationService(this.KeySetRepository, phoneNumber);
+            MessageService = new MessageService(ContactRepository, MessageRepository, this.EncryptionService, Encoding, phoneNumber);
+        }
+
+        private void InitializeFetcherDependencies(string phoneNumber)
+        {
+            MessagingContext fetcherMessagingContext = new DesignTimeDbContextFactory().CreateDbContext(new string[] { });
+            IMessageRepository fetcherMessageRepository = new EntityFrameworkMessageRepository(fetcherMessagingContext);
+            IContactRepository fetcherContactRepository = new EntityFrameworkContactRepository(phoneNumber, fetcherMessagingContext);
+            IKeySetRepository fetcherKeySetRepository = new EntityFrameworkKeySetRepository(phoneNumber, fetcherMessagingContext);
+            IEncryptionService fetcherEncryptionService = new RSAEncryptionService(fetcherKeySetRepository, Encoding);
+
+            FetcherMessageService = new MessageService(fetcherContactRepository, fetcherMessageRepository, fetcherEncryptionService, Encoding, phoneNumber);
         }
     }
 }
