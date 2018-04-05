@@ -13,9 +13,10 @@ namespace AirTransit_Core.Repositories
         {
             this._phoneNumber = phoneNumber;
 
-            if (GetContact(this._phoneNumber) == null) return;
-            AddContact(new Contact(this._phoneNumber, "You"));
-            Commit();
+            if (GetSelf() == null)
+            {
+                AddContact(new Contact(this._phoneNumber, "You"));
+            }
         }
 
         public IEnumerable<Contact> GetContacts()
@@ -25,15 +26,13 @@ namespace AirTransit_Core.Repositories
 
         public Contact GetSelf()
         {
-            return MessagingContext.Contacts?
-                .Where(c => c.PhoneNumber == this._phoneNumber)
-                .SingleOrDefault();
+            return GetContact(this._phoneNumber);
         }
 
         public Contact GetContact(string phoneNumber)
         {
-            return this.MessagingContext.Contacts?
-                .SingleOrDefault(c => c.PhoneNumber == phoneNumber);
+            return this.MessagingContext.Contacts
+                .FirstOrDefault(c => c.PhoneNumber == phoneNumber);
         }
 
         public void AddContact(Contact contact)
