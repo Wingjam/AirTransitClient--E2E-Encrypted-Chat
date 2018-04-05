@@ -101,6 +101,7 @@ namespace AirTransit_WindowsForms
             {
                 MessageService.SendMessage(currentContact, TxtInput.Text);
                 PrintMessage(MessageRepo.GetLastMessage(currentContact));
+                TxtInput.ResetText();
             }
             else
                 MessageBox.Show("Plz select a contact before sending a message.");
@@ -141,7 +142,7 @@ namespace AirTransit_WindowsForms
             Txtconversation.ForeColor = currentlyUser ? UserColor : ContactColor;
             if (WasUser != currentlyUser || Txtconversation.TextLength == 0)
             {
-                AppendTextSafely(message.Sender.Name);
+                AppendTextSafely($"{message.Sender.Name} :");
                 WasUser = currentlyUser;
             }
 
