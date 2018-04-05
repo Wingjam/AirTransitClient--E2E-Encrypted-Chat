@@ -17,6 +17,7 @@ namespace AirTransit_Core.Services
     {
         private readonly IKeySetRepository _keySetRepository;
         private readonly Encoding _encoding;
+        private static readonly int MAX_ENCRYPTION_CHUNK_SIZE = 245;
         private static readonly int ENCRYPTED_CHUNK_SIZE = 256;
 
         internal static readonly int KEY_SIZE = 2048;
@@ -84,7 +85,8 @@ namespace AirTransit_Core.Services
                 using (var rsa = new RSACryptoServiceProvider(KEY_SIZE))
                 {
                     rsa.FromXmlStringNetCore(contact.PublicKey);
-                    var encryptedData = rsa.Encrypt(messageBytes, RSAEncryptionPadding.Pkcs1);
+                    var encryptedData = SplitMessage(messageBytes, MAX_ENCRYPTION_CHUNK_SIZE)
+                        .SelectMany(chunk => rsa.Encrypt(chunk, RSAEncryptionPadding.Pkcs1));
                     return Convert.ToBase64String(encryptedData.ToArray());
                 }
             }
