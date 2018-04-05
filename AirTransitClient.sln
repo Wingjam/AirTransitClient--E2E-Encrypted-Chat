@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9B6831F6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirTransit_Core", "AirTransit_Core\AirTransit_Core.csproj", "{BB191FC3-CF0D-4EAC-9187-923BDD656CE3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirTransit_Core_NetFramework_Tests", "AirTransit_Core_NetFramework_Tests\AirTransit_Core_NetFramework_Tests.csproj", "{07427606-39B7-453D-9E54-459E13B46D47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,12 +37,17 @@ Global
 		{BB191FC3-CF0D-4EAC-9187-923BDD656CE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB191FC3-CF0D-4EAC-9187-923BDD656CE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB191FC3-CF0D-4EAC-9187-923BDD656CE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07427606-39B7-453D-9E54-459E13B46D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07427606-39B7-453D-9E54-459E13B46D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07427606-39B7-453D-9E54-459E13B46D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07427606-39B7-453D-9E54-459E13B46D47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{52CB66B1-C377-4548-965E-BC04572811E9} = {9B6831F6-F0FA-4282-BA88-492BA8A9F4DA}
+		{07427606-39B7-453D-9E54-459E13B46D47} = {9B6831F6-F0FA-4282-BA88-492BA8A9F4DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4F24F157-FFF4-4BDC-B534-B969DE186C44}
