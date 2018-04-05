@@ -76,6 +76,7 @@
             this.ListContacts.Sorted = true;
             this.ListContacts.TabIndex = 0;
             this.ListContacts.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ListContacts_MouseClick);
+            this.ListContacts.SelectedValueChanged += new System.EventHandler(this.ListContacts_SelectedValueChanged);
             this.ListContacts.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ListContacts_MouseDoubleClick);
             // 
             // MenuStrip

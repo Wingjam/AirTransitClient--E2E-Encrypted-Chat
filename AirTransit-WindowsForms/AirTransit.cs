@@ -26,6 +26,7 @@ namespace AirTransit_WindowsForms
         private Color UserColor = Color.DarkRed;
         private Color ContactColor = Color.DarkBlue;
         private bool WasUser;
+        private Contact selectedContact;
 
         public AirTransit()
         {
@@ -96,11 +97,10 @@ namespace AirTransit_WindowsForms
 
         private void BtnSend_Click(object sender, EventArgs e)
         {
-            Contact currentContact = ListContacts.SelectedItem as Contact;
-            if (ListContacts.SelectedItem != null)
+            if (selectedContact != null)
             {
-                MessageService.SendMessage(currentContact, TxtInput.Text);
-                PrintMessage(MessageRepo.GetLastMessage(currentContact));
+                MessageService.SendMessage(selectedContact, TxtInput.Text);
+                PrintMessage(MessageRepo.GetLastMessage(selectedContact));
                 TxtInput.ResetText();
             }
             else
@@ -126,8 +126,8 @@ namespace AirTransit_WindowsForms
 
         private void ShowCurrentContactConvo()
         {
-            if (ListContacts.SelectedItem != null)
-                ShowConvo((Contact)ListContacts.SelectedItem);
+            if (selectedContact != null)
+                ShowConvo(selectedContact);
         }
 
         private void ShowConvo(Contact contact)
@@ -146,7 +146,7 @@ namespace AirTransit_WindowsForms
                 WasUser = currentlyUser;
             }
 
-            AppendTextSafely(message.Content);
+            AppendTextSafely(message.Content + Environment.NewLine);
         }
 
         private void AppendTextSafely(string message)
@@ -167,7 +167,7 @@ namespace AirTransit_WindowsForms
         {
 
             Contact senderContact = newMessage.Sender;
-            if (senderContact == ListContacts.SelectedItem as Contact)
+            if (senderContact == selectedContact)
             {
                 PrintMessage(newMessage);
             }
@@ -212,15 +212,20 @@ namespace AirTransit_WindowsForms
 
         private void ListContacts_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (ListContacts.SelectedItem is Contact currentContact)
+            if (selectedContact != null)
             {
-                NewContact newContact = new NewContact(currentContact.PhoneNumber, currentContact.Name);
+                NewContact newContact = new NewContact(selectedContact.PhoneNumber, selectedContact.Name);
                 if (newContact.ShowDialog() == DialogResult.OK)
                 {
-                    currentContact.Name = newContact.ContactName;
-                    ContactRepo.UpdateContact(currentContact);
+                    selectedContact.Name = newContact.ContactName;
+                    ContactRepo.UpdateContact(selectedContact);
                 }
             }
+        }
+
+        private void ListContacts_SelectedValueChanged(object sender, EventArgs e)
+        {
+            selectedContact = ListContacts.SelectedValue as Contact;
         }
     }
 }
