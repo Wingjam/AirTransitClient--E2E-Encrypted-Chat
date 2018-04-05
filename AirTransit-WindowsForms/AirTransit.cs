@@ -17,7 +17,7 @@ namespace AirTransit_WindowsForms
     {
         private delegate void StringArgReturningVoidDelegate(string text);
         private string phoneNumber;
-        private List<Contact> contacts;
+        private ConcurrentBag<Contact> contacts;
         private BlockingCollection<Message> newMessageIds;
         private CoreServices Core;
         private IContactRepository ContactRepo;
@@ -53,7 +53,7 @@ namespace AirTransit_WindowsForms
                     ContactRepo = Core.ContactRepository;
                     MessageRepo = Core.MessageRepository;
                     MessageService = Core.MessageService;
-                    Contacts = ContactRepo.GetContacts().ToList();
+                    Contacts = new ConcurrentBag<Contact>(ContactRepo.GetContacts().ToList());
                     newMessageIds = Core.GetBlockingCollection();
 
                     // Based on : https://docs.microsoft.com/en-us/dotnet/standard/collections/thread-safe/blockingcollection-overview
@@ -116,7 +116,7 @@ namespace AirTransit_WindowsForms
             }
 
             // Refresh contacts list
-            Contacts = ContactRepo.GetContacts().ToList();
+            Contacts = new ConcurrentBag<Contact>(ContactRepo.GetContacts().ToList());
         }
 
         private void AirTransit_FormClosing(object sender, FormClosingEventArgs e)
@@ -188,19 +188,20 @@ namespace AirTransit_WindowsForms
             }
         }
 
-        private List<Contact> Contacts
+        private ConcurrentBag<Contact> Contacts
         {
             get => contacts;
             set
             {
-                int clientContact = value.FindIndex(c => c.PhoneNumber == PhoneNumber);
+                contacts = value;
+                List<Contact> inList = value.ToList();
+                int clientContact = inList.FindIndex(c => c.PhoneNumber == PhoneNumber);
                 // FindIndex return -1 if nothing is found
                 if (clientContact != -1)
                 {
-                    value.RemoveAt(clientContact);
+                    inList.RemoveAt(clientContact);
                 }
-                contacts = value;
-                ListContacts.DataSource = contacts;
+                ListContacts.DataSource = inList;
             }
         }
 
