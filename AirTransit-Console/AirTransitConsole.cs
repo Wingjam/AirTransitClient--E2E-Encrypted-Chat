@@ -43,6 +43,7 @@ namespace AirTransit_Console
                 {
                     case "SM": //SendMessage
                         SendMessage();
+                        FetchMessages();
                         break;
                     case "FM": //FetchMessages
                         FetchMessages();
@@ -77,7 +78,7 @@ namespace AirTransit_Console
             Environment.Exit(0);
         }
 
-        private static string GetTextInput(string text)
+        private static string GetTextInput(string text, bool acceptNoResponse = false)
         {
             string result;
             
@@ -85,7 +86,7 @@ namespace AirTransit_Console
             {
                 WriteToConsole(text, TEXTINPUTFOLLOWING);
                 result = Console.ReadLine();
-            } while (string.IsNullOrEmpty(result));
+            } while (string.IsNullOrEmpty(result) && !acceptNoResponse);
             
             return result;
         }
@@ -129,7 +130,7 @@ namespace AirTransit_Console
             }
             
             var answer = GetTextInput($"Send message to {_currentContact.Name} " +
-                                      $"({_currentContact.PhoneNumber})? (y/n): ").ToLower();
+                                      $"({_currentContact.PhoneNumber})? (Y/n): ", true).ToLower();
             if (answer == "n" || answer == "no")
             {
                 SelectContact();
@@ -178,7 +179,7 @@ namespace AirTransit_Console
                     break;
                 }
                 
-                var getLongerHistory = GetTextInput($"Get longer message history? (y/n/all): ").ToLower();
+                var getLongerHistory = GetTextInput($"Get longer message history? (y/N/all): ", true).ToLower();
                 switch (getLongerHistory)
                 {
                     case "y":
