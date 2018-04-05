@@ -1,27 +1,33 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using AirTransit_Core.Models;
 using AirTransit_Core.Repositories;
 using AirTransit_Core.Utilities;
+using System.Linq;
 
 [assembly: InternalsVisibleTo("AirTransit_Core_Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace AirTransit_Core.Services
 {
-    class RSAEncryptionService : IEncryptionService
+    internal class RSAEncryptionService : IEncryptionService
     {
         private readonly IKeySetRepository _keySetRepository;
         private readonly Encoding _encoding;
-        internal static readonly int KEY_SIZE = 1024;
+        private static readonly int MAX_ENCRYPTION_CHUNK_SIZE = 245;
+        private static readonly int ENCRYPTED_CHUNK_SIZE = 256;
+
+        internal static readonly int KEY_SIZE = 2048;
             
         public RSAEncryptionService(IKeySetRepository keySetRepository, Encoding encoding)
         {
             this._keySetRepository = keySetRepository;
             this._encoding = encoding;
         }
-
+        
         public string GenerateSignature(string content)
         {
             try
@@ -52,12 +58,8 @@ namespace AirTransit_Core.Services
                     rsa.FromXmlStringNetCore(clientKey);
                     var signatureBytes = this._encoding.GetBytes(signature);
                     var signedDataBytes = Convert.FromBase64String(signedData);
-                    
-                    var hash = new SHA256Managed();
 
-                    bool dataOK = rsa.VerifyData(signedDataBytes, CryptoConfig.MapNameToOID("SHA256"), signatureBytes);
-                    var hashedData = hash.ComputeHash(signedDataBytes);
-                    return rsa.VerifyHash(hashedData, CryptoConfig.MapNameToOID("SHA256"), signatureBytes);
+                    return rsa.VerifyData(signatureBytes, CryptoConfig.MapNameToOID("SHA256"), signedDataBytes);
                 }
             }
             catch (CryptographicException e)
@@ -67,19 +69,26 @@ namespace AirTransit_Core.Services
             }
         }
         
+        internal IEnumerable<byte[]> SplitMessage(byte[] message, int chunkSize)
+        {
+            int chunkCount = (int)Math.Ceiling((double)message.Length / chunkSize);
+            for (int i = 0; i < chunkCount; ++i)
+                yield return message.Skip(i * chunkSize).Take(chunkSize).ToArray();
+        }
+        
         public string Encrypt(string message, Contact contact)
         {
             byte[] messageBytes = _encoding.GetBytes(message);
             
             try
             {
-                byte[] encryptedData;
-                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(KEY_SIZE))
+                using (var rsa = new RSACryptoServiceProvider(KEY_SIZE))
                 {
                     rsa.FromXmlStringNetCore(contact.PublicKey);
-                    encryptedData = rsa.Encrypt(messageBytes, RSAEncryptionPadding.Pkcs1);
+                    var encryptedData = SplitMessage(messageBytes, MAX_ENCRYPTION_CHUNK_SIZE)
+                        .SelectMany(chunk => rsa.Encrypt(chunk, RSAEncryptionPadding.Pkcs1));
+                    return Convert.ToBase64String(encryptedData.ToArray());
                 }
-                return Convert.ToBase64String(encryptedData);
             }
             catch (CryptographicException e)
             {
@@ -95,13 +104,13 @@ namespace AirTransit_Core.Services
             
             try
             {
-                byte[] decryptedData;
-                using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider(KEY_SIZE))
+                using (var rsa = new RSACryptoServiceProvider(KEY_SIZE))
                 {
-                    RSA.FromXmlStringNetCore(key.PrivateKey);
-                    decryptedData = RSA.Decrypt(encryptedMessageBytes, RSAEncryptionPadding.Pkcs1);
+                    rsa.FromXmlStringNetCore(key.PrivateKey);
+                    var decryptedData = SplitMessage(encryptedMessageBytes, ENCRYPTED_CHUNK_SIZE)
+                        .SelectMany(chunk => rsa.Decrypt(chunk, RSAEncryptionPadding.Pkcs1));
+                    return _encoding.GetString(decryptedData.ToArray());
                 }
-                return _encoding.GetString(decryptedData);
             }
             catch (CryptographicException e)
             {
