@@ -53,8 +53,9 @@ namespace AirTransit_Core.Repositories
         public IEnumerable<Message> GetMessages(Contact contact, int maximumNumberOfMessages)
         {
             return GetMessagesExchangeWithContact(contact)?
-                .OrderBy(m => m.Timestamp)
-                .Take(maximumNumberOfMessages);
+                .OrderByDescending(m => m.Timestamp)
+                .Take(maximumNumberOfMessages)
+                .OrderBy(m => m.Timestamp);
         }
 
         public Message GetLastMessage(Contact contact)

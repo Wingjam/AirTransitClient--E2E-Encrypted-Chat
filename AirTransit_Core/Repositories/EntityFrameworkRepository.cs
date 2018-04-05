@@ -6,7 +6,7 @@
 
         protected EntityFrameworkRepository(MessagingContext messagingContext)
         {
-            MessagingContext = messagingContext;
+            this.MessagingContext = messagingContext;
         }
 
         protected void Commit()
