@@ -10,6 +10,7 @@ using AirTransit_Core.Utilities;
 using System.Linq;
 
 [assembly: InternalsVisibleTo("AirTransit_Core_Tests")]
+[assembly: InternalsVisibleTo("AirTransit_Core_NetFramework_Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace AirTransit_Core.Services
 {
@@ -17,10 +18,10 @@ namespace AirTransit_Core.Services
     {
         private readonly IKeySetRepository _keySetRepository;
         private readonly Encoding _encoding;
-        private static readonly int MAX_ENCRYPTION_CHUNK_SIZE = 245;
-        private static readonly int ENCRYPTED_CHUNK_SIZE = 256;
+        private static readonly int MAX_ENCRYPTION_CHUNK_SIZE = 117;
+        private static readonly int ENCRYPTED_CHUNK_SIZE = 128;
 
-        internal static readonly int KEY_SIZE = 2048;
+        internal static readonly int KEY_SIZE = 1024;
             
         public RSAEncryptionService(IKeySetRepository keySetRepository, Encoding encoding)
         {
