@@ -41,7 +41,7 @@
             this.BtnAddContact.Location = new System.Drawing.Point(12, 90);
             this.BtnAddContact.Name = "BtnAddContact";
             this.BtnAddContact.Size = new System.Drawing.Size(260, 23);
-            this.BtnAddContact.TabIndex = 0;
+            this.BtnAddContact.TabIndex = 2;
             this.BtnAddContact.Text = "Add Contact";
             this.BtnAddContact.UseVisualStyleBackColor = true;
             this.BtnAddContact.Click += new System.EventHandler(this.BtnAddContact_Click);
@@ -52,7 +52,7 @@
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(118, 13);
-            this.label1.TabIndex = 1;
+            this.label1.TabIndex = 3;
             this.label1.Text = "Contact phone number:";
             // 
             // label2
@@ -61,7 +61,7 @@
             this.label2.Location = new System.Drawing.Point(12, 48);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(76, 13);
-            this.label2.TabIndex = 2;
+            this.label2.TabIndex = 4;
             this.label2.Text = "Contact name:";
             // 
             // TxtName
@@ -69,14 +69,14 @@
             this.TxtName.Location = new System.Drawing.Point(12, 64);
             this.TxtName.Name = "TxtName";
             this.TxtName.Size = new System.Drawing.Size(260, 20);
-            this.TxtName.TabIndex = 3;
+            this.TxtName.TabIndex = 1;
             // 
             // TxtPhoneNumber
             // 
             this.TxtPhoneNumber.Location = new System.Drawing.Point(12, 25);
             this.TxtPhoneNumber.Name = "TxtPhoneNumber";
             this.TxtPhoneNumber.Size = new System.Drawing.Size(260, 20);
-            this.TxtPhoneNumber.TabIndex = 4;
+            this.TxtPhoneNumber.TabIndex = 0;
             // 
             // NewContact
             // 

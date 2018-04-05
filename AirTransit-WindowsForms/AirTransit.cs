@@ -113,6 +113,9 @@ namespace AirTransit_WindowsForms
             {
                 ContactRepo.AddContact(new Contact(newContact.PhoneNumber, newContact.ContactName));
             }
+
+            // Refresh contacts list
+            Contacts = ContactRepo.GetContacts().ToList();
         }
 
         private void AirTransit_FormClosing(object sender, FormClosingEventArgs e)
@@ -134,7 +137,7 @@ namespace AirTransit_WindowsForms
 
         private void PrintMessage(Message message)
         {
-            bool currentlyUser = message.Sender.PhoneNumber == PhoneNumber;
+            bool currentlyUser = message.DestinationPhoneNumber != PhoneNumber;
             Txtconversation.ForeColor = currentlyUser ? UserColor : ContactColor;
             if (WasUser != currentlyUser || Txtconversation.TextLength == 0)
             {
@@ -207,12 +210,14 @@ namespace AirTransit_WindowsForms
 
         private void ListContacts_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            Contact currentContact = ListContacts.SelectedItem as Contact;
-            NewContact newContact = new NewContact(currentContact.PhoneNumber, currentContact.Name);
-            if (newContact.ShowDialog() == DialogResult.OK)
+            if (ListContacts.SelectedItem is Contact currentContact)
             {
-                currentContact.Name = newContact.ContactName;
-                ContactRepo.UpdateContact(currentContact);
+                NewContact newContact = new NewContact(currentContact.PhoneNumber, currentContact.Name);
+                if (newContact.ShowDialog() == DialogResult.OK)
+                {
+                    currentContact.Name = newContact.ContactName;
+                    ContactRepo.UpdateContact(currentContact);
+                }
             }
         }
     }
