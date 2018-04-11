@@ -1,5 +1,5 @@
 # AirTransit--E2E-Encrypted-Chat
-End-to-End Encrypted Chat, university project  
+An End-to-End Encrypted Chat for a university project  
 
 ## Projects
 This repository contains 3 main projects.  
